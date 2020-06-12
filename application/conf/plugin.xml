@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugins>
+    <plugin>
+        <name>A</name>
+        <jar>D:\secgate/A.jar</jar>
+        <class>com.example.demo.plugin.DemoAsync</class>
+        <status>true</status>
+        <requires>
+            <require name="required_IP">IP</require>
+            <require name="required_Port">Port</require>
+            <require name="required_MAC">Mac</require>
+        </requires>
+    </plugin>
+    <plugin>
+        <name>B客户插件</name>
+        <jar>D:/plugin/b-plugin.jar</jar>
+        <class>com.xxg.bplugin.BPlugin</class>
+        <status>false</status>
+        <requires>
+            <require name="required_MAC">MAC</require>
+            <require name="required_User">User</require>
+        </requires>
+    </plugin>
+
+</plugins>

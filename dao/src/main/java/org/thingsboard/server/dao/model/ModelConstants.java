@@ -313,7 +313,7 @@ public class ModelConstants {
     /**
      * Cassandra event constants.
      */
-    public static final String EVENT_COLUMN_FAMILY_NAME = "event";
+    public static final String EVENT_COLUMN_FAMILY_NAME = "events";
     public static final String EVENT_TENANT_ID_PROPERTY = TENANT_ID_PROPERTY;
     public static final String EVENT_TYPE_PROPERTY = "event_type";
     public static final String EVENT_UID_PROPERTY = "event_uid";

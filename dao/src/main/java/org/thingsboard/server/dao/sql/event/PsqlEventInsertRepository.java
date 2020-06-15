@@ -48,6 +48,6 @@ public class PsqlEventInsertRepository extends EventInsertRepository {
     }
 
     private static String getInsertOrUpdateString(String eventKeyStatement, String updateKeyStatement) {
-        return "INSERT INTO event (id, body, entity_id, entity_type, event_type, event_uid, tenant_id) VALUES (:id, :body, :entity_id, :entity_type, :event_type, :event_uid, :tenant_id) ON CONFLICT " + eventKeyStatement + " DO UPDATE SET body = :body, " + updateKeyStatement + " returning *";
+        return "INSERT INTO events (id, body, entity_id, entity_type, event_type, event_uid, tenant_id) VALUES (:id, :body, :entity_id, :entity_type, :event_type, :event_uid, :tenant_id) ON CONFLICT " + eventKeyStatement + " DO UPDATE SET body = :body, " + updateKeyStatement + " returning *";
     }
 }

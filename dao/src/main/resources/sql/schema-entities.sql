@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS device_credentials (
     device_id varchar(31)
 );
 
-CREATE TABLE IF NOT EXISTS event (
+CREATE TABLE IF NOT EXISTS events (
     id varchar(31) NOT NULL CONSTRAINT event_pkey PRIMARY KEY,
     body varchar(10000000),
     entity_id varchar(31),

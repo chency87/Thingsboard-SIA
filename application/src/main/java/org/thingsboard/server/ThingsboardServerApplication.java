@@ -18,8 +18,10 @@ package org.thingsboard.server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
@@ -28,6 +30,7 @@ import java.util.Arrays;
 @EnableAsync
 @EnableSwagger2
 @EnableScheduling
+
 @ComponentScan({"org.thingsboard.server"})
 public class ThingsboardServerApplication {
 

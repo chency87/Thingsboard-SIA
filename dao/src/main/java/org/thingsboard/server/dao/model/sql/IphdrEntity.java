@@ -58,4 +58,6 @@ public class IphdrEntity {
 
     @Column(name = "ip_csum")
     private Integer ipCsum;
+
+
 }

@@ -46,11 +46,14 @@
             <artifactId>sigar</artifactId>
             <version>1.6.4</version>
         </dependency>
-        <!--websocket-->
+
+        <!--html-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+
+        <!--htmljieshu-->
         <dependency>
             <groupId>de.ruedigermoeller</groupId>
             <artifactId>fst</artifactId>

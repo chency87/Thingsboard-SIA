@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.thingsboard.server.plugin.DataFetchPluginManager;
@@ -27,7 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import org.thingsboard.server.plugin.bean.SocketMessage;
 
-@RestController
+//@RestController
+@Controller
 public class IndexController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
@@ -54,6 +56,10 @@ public class IndexController {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+    @RequestMapping("/2")
+    public String webSocket1() {
+        return "index2";
+    }
     @GetMapping("/")
     public String webSocket() {
         return "index";

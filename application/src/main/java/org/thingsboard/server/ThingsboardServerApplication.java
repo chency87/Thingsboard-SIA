@@ -24,6 +24,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
 
+/**
+ *  编译命令
+ *      mvn clean install -DskipTests
+ *  杀线程
+ *      taskkill /f /im java.exe
+ */
 @SpringBootConfiguration
 @EnableAsync
 @EnableSwagger2

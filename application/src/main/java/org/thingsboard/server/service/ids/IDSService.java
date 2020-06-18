@@ -1,9 +1,12 @@
 package org.thingsboard.server.service.ids;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thingsboard.server.bean.IDSConsole;
 import org.thingsboard.server.bean.Port;
 import org.thingsboard.server.bean.Signatures;
+import org.thingsboard.server.dao.model.sql.IphdrEntity;
+import org.thingsboard.server.dao.sql.secgate.IphdrRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,23 +16,39 @@ import java.util.Map;
 @Service
 public class IDSService {
 
+    @Autowired
+    IphdrRepository iphdrRepository;
+
     public List<IDSConsole> getAlertInformation() {
 
+        ArrayList<IDSConsole> idsConsolesTest = new ArrayList<>();
         ArrayList<IDSConsole> idsConsoles = new ArrayList<>();
         IDSConsole idsConsole1 = new IDSConsole();
         IDSConsole idsConsole2 = new IDSConsole();
 
         idsConsole1.setName("TCP Alerts");
         idsConsole1.setNum(1500);
-        idsConsole1.setProportion(50.0);
+        idsConsole1.setProportion(50);
 
         idsConsole2.setName("UDP Alerts");
         idsConsole2.setNum(1500);
-        idsConsole2.setProportion(50.0);
+        idsConsole2.setProportion(50);
         idsConsoles.add(idsConsole1);
         idsConsoles.add(idsConsole2);
 
-        return idsConsoles;
+        boolean id = iphdrRepository.existsById(2);
+        int icmpSize = iphdrRepository.findIphdrEntitiesByIpProto(1).size();
+        int udpSize = iphdrRepository.findIphdrEntitiesByIpProto(2).size();
+        int tcpSize = iphdrRepository.findIphdrEntitiesByIpProto(3).size();
+        Integer total = icmpSize + udpSize + tcpSize;
+
+        idsConsoles.add(new IDSConsole("ICMP Alerts",icmpSize, (icmpSize/total)*100));
+        idsConsoles.add(new IDSConsole("UDP Alerts",udpSize, (icmpSize/total)*100));
+        idsConsoles.add(new IDSConsole("TCP Alerts",tcpSize, (icmpSize/total)*100));
+        idsConsoles.add(new IDSConsole("Total Alerts",total, 100));
+
+//        return idsConsoles;
+        return idsConsolesTest;
     }
 
     public List<IDSConsole> getSensors() {
@@ -40,11 +59,11 @@ public class IDSService {
 
         idsConsole1.setName("sensor1");
         idsConsole1.setNum(500);
-        idsConsole1.setProportion(50.0);
+        idsConsole1.setProportion(50);
 
         idsConsole2.setName("sensor2");
         idsConsole2.setNum(500);
-        idsConsole2.setProportion(50.0);
+        idsConsole2.setProportion(50);
         idsConsoles.add(idsConsole1);
         idsConsoles.add(idsConsole2);
 
@@ -59,11 +78,11 @@ public class IDSService {
 
         idsConsole1.setName("192.168.0.11");
         idsConsole1.setNum(5);
-        idsConsole1.setProportion(50.0);
+        idsConsole1.setProportion(50);
 
         idsConsole2.setName("192.168.0.12");
         idsConsole2.setNum(5);
-        idsConsole2.setProportion(50.0);
+        idsConsole2.setProportion(50);
         idsConsoles.add(idsConsole1);
         idsConsoles.add(idsConsole2);
 
@@ -79,11 +98,11 @@ public class IDSService {
 
         idsConsole1.setName("192.168.1.21");
         idsConsole1.setNum(5);
-        idsConsole1.setProportion(50.0);
+        idsConsole1.setProportion(50);
 
         idsConsole2.setName("192.168.1.22");
         idsConsole2.setNum(5);
-        idsConsole2.setProportion(50.0);
+        idsConsole2.setProportion(50);
         idsConsoles.add(idsConsole1);
         idsConsoles.add(idsConsole2);
 

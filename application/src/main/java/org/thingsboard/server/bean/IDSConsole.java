@@ -1,8 +1,12 @@
 package org.thingsboard.server.bean;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class IDSConsole {
 
     //统计名称
@@ -12,5 +16,5 @@ public class IDSConsole {
     private Integer num;
 
     //占比
-    private Double proportion;
+    private Integer proportion;
 }

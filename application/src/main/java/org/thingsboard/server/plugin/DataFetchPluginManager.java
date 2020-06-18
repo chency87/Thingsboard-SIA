@@ -8,7 +8,10 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.thingsboard.server.controller.idscontroller.PluginController;
 import org.thingsboard.server.plugin.bean.DataFetchPlugin;
 
 import java.io.*;
@@ -20,6 +23,8 @@ import java.util.List;
 
 @Service
 public class DataFetchPluginManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataFetchPluginManager.class);
     private URLClassLoader urlClassLoader;
     private List<DataFetchPlugin> pluginList;
     private SAXReader saxReader;
@@ -276,7 +281,5 @@ public class DataFetchPluginManager {
         }
         return sucess;
     }
-
-
 
 }

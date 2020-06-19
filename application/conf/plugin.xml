@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugins>
     <plugin>
-        <name>A</name>
-        <jar>D:\secgate/A.jar</jar>
-        <class>com.example.demo.plugin.DemoAsync</class>
+        <name>ModbusTCP2</name>
+        <jar>D:/cn.sia.sec-1.0-SNAPSHOT.jar</jar>
+        <class>cn.sia.sec.proto.plugin.ModbusTcpServiceImpl</class>
         <status>true</status>
         <requires>
-            <require name="required_IP">IP</require>
-            <require name="required_Port">Port</require>
-            <require name="required_MAC">Mac</require>
-        </requires>
-    </plugin>
-    <plugin>
-        <name>B客户插件</name>
-        <jar>D:/plugin/b-plugin.jar</jar>
-        <class>com.xxg.bplugin.BPlugin</class>
-        <status>false</status>
-        <requires>
-            <require name="required_MAC">MAC</require>
-            <require name="required_User">User</require>
+            <require name="port">port</require>
+            <require name="ip">ip</require>
+            <require name="funCode">funCode</require>
+            <require name="slaveId">slaveId</require>
+            <require name="address">address</require>
+            <require name="quantity">quantity</require>
+            <require name="attr">attr</require>
         </requires>
     </plugin>
 

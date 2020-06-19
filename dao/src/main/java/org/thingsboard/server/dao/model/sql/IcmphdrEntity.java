@@ -28,5 +28,4 @@ public class IcmphdrEntity implements Serializable {
     private int icmpId;
     private int icmpSeq;
 
-    }
 }

@@ -24,19 +24,28 @@ public class AsyncDataFetchServiceImpl implements AsyncService {
     @Async("defaultThreadPool")
     public Boolean executeAsyncService(DataFetchPlugin plugin, Map<String,String> config) {
 
-        System.out.println(" Start Execute the Service ");
-        try {
-            AsyncDataFetchPluginService service = dfm.getInstanceByClassName(plugin.getClassName());
-            service.executeAsyncService(config);
-            System.out.println("Stop Execute the Service");
-            return true;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+
+        while (plugin.getStatus()) {
+
+            System.out.println(" Start Execute the Service ");
+            try {
+                AsyncDataFetchPluginService service = dfm.getInstanceByClassName(plugin.getClassName());
+                service.executeAsyncService(config);
+
+                System.out.println("Stop Execute the Service");
+                return true;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            return false;
         }
         return false;
     }
+
+
+
 }

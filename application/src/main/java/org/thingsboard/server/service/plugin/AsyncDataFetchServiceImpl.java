@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import cn.sia.sec.proto.plugin.AsyncDataFetchPluginService;
-import org.thingsboard.server.plugin.DataFetchPluginManager;
+import org.thingsboard.server.plugin.DataFetchProtoHandlePluginManager;
 import org.thingsboard.server.plugin.bean.DataFetchPlugin;
 
 import javax.annotation.Resource;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class AsyncDataFetchServiceImpl implements AsyncService {
 
     @Autowired
-    private DataFetchPluginManager dfm;
+    private DataFetchProtoHandlePluginManager dfm;
     @Resource(name = "defaultThreadPool")
     private ThreadPoolTaskExecutor poolTaskExecutor;
 

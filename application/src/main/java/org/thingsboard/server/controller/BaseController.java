@@ -252,7 +252,7 @@ public abstract class BaseController {
         }
     }
 
-    UUID toUUID(String id) {
+    public UUID toUUID(String id) {
         return UUID.fromString(id);
     }
 

@@ -15,9 +15,8 @@ import org.thingsboard.server.common.data.id.EntityIdFactory;
 import org.thingsboard.server.common.data.kv.AttributeKvEntry;
 import org.thingsboard.server.common.data.security.DeviceCredentials;
 import org.thingsboard.server.controller.BaseController;
-import org.thingsboard.server.controller.TbUrlConstants;
 import org.thingsboard.server.executejob.BaseDataFetchJob;
-import org.thingsboard.server.plugin.DataFetchPluginManager;
+import org.thingsboard.server.plugin.DataFetchProtoHandlePluginManager;
 import org.thingsboard.server.plugin.bean.DataFetchPlugin;
 import org.thingsboard.server.service.ids.QuartzManager;
 import org.thingsboard.server.service.security.model.SecurityUser;
@@ -25,18 +24,18 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@RequestMapping(TbUrlConstants.TELEMETRY_URL_PREFIX)
+@RequestMapping("/api")
 public class DeviceDataFetchJobController  extends BaseController {
 
     @Autowired
     private QuartzManager quartzManager;
 
     @Autowired
-    private DataFetchPluginManager dfp;
+    private DataFetchProtoHandlePluginManager dfp;
 
 
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
-    @RequestMapping("/start/all")
+    @RequestMapping(value="/exec/all", method = RequestMethod.GET)
     public void startAllQuartzJob() {
         quartzManager.startScheduler();
     }
@@ -45,24 +44,14 @@ public class DeviceDataFetchJobController  extends BaseController {
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/plugin/exec", method = RequestMethod.GET, params = {"status","cron","strDeviceId"})
     @ResponseBody
-    public String doAcquire( @PathVariable("entityType") String entityType, @PathVariable("entityId") String entityIdStr,
+    public DeferredResult<ResponseEntity> doAcquire( @PathVariable("entityType") String entityType, @PathVariable("entityId") String entityIdStr,
                              @RequestParam(name = "status") Boolean status,
-                             @RequestParam(name = "cron") String cron,
+                             @RequestParam(name = "cron",defaultValue = "0/10 * * * * ?\"") String cron,
                              @RequestParam(name = "strDeviceId") String strDeviceId) throws ThingsboardException, ExecutionException, InterruptedException {
 
-        // jobName = entityId
-        // jobGroupName = entityType + "DATAFETCH"
-        // jobTime : 可以定义一个默认值，然后前端也可以传递
-        //封装到map
-//        int jobTime = 5;
-//        int jobTimes = 3;
-        if (cron.isEmpty()) cron= "0/10 * * * * ?";
-
         String pluginName = null;
-//        String keysStr = "pluginName,port,quantity,slaveId,ip,funCode,address,attr";
-        String keysStr = getKeys();
         SecurityUser user = getCurrentUser();
-        List<String> keyList = toKeysList(keysStr);
+        List<String> keyList = toKeysList(ConstantConfValue.dataFetchPluginName);
         EntityId entity = EntityIdFactory.getByTypeAndId(entityType, entityIdStr);
 
         ListenableFuture<List<AttributeKvEntry>> listListenableFuture = attributesService.find(user.getTenantId(), entity, "CLIENT_SCOPE", keyList);
@@ -70,12 +59,11 @@ public class DeviceDataFetchJobController  extends BaseController {
         for (AttributeKvEntry attributeKvEntry:attributeKvEntries) {
                 Optional<String> strValue = attributeKvEntry.getStrValue();
                 pluginName = strValue.get();
-//                System.out.println("-------pluginName----------" + pluginName);
         }
 
         if (!StringUtils.isEmpty(pluginName)) {
             Map<String,String> jobData = new HashMap<>();
-            DataFetchPlugin plugin = dfp.getPlginInfoFromList(pluginName);
+            DataFetchPlugin plugin = dfp.getPluginInfoFromList(pluginName);
             ArrayList<String> requires = (ArrayList<String>) plugin.getRequires();
 //            String req = "port,ip,funCode,slaveId,address,quantity,attr";
             ListenableFuture<List<AttributeKvEntry>> RequireListenableFuture = attributesService.find(user.getTenantId(), entity, "CLIENT_SCOPE", requires);
@@ -89,10 +77,10 @@ public class DeviceDataFetchJobController  extends BaseController {
             DeviceCredentials deviceCredentialsByDeviceId = deviceCredentialsService.findDeviceCredentialsByDeviceId(getCurrentUser().getTenantId(), deviceId);
             String token = deviceCredentialsByDeviceId.getCredentialsId();
             String jobName =entity.toString();
-            String jobGroupName = entityType + "DATAFETCH";
-            jobData.put("className",plugin.getClassName());
-            jobData.put("jarPath",plugin.getJar());
-            jobData.put("token",token);
+            String jobGroupName = entityType + ConstantConfValue.dataFetchJobGroupNameSuffix;
+            jobData.put(ConstantConfValue.dataFetchJobDataParamClassName,plugin.getClassName());
+            jobData.put(ConstantConfValue.dataFetchJobDataParamJarPath,plugin.getJar());
+            jobData.put(ConstantConfValue.dataFetchJobDataParamToken,token);
 
             if (status){
                 if (hasJob(jobName)){
@@ -103,24 +91,11 @@ public class DeviceDataFetchJobController  extends BaseController {
             }else {
                 quartzManager.pauseJob(jobName,jobGroupName);
             }
-            return "success";
+            return getImmediateDeferredResult("SUCCESS", HttpStatus.OK);
         }else {
-            return "error";
+            return getImmediateDeferredResult("Execute Data Fetch Error", HttpStatus.OK);
         }
-//        quartzManager.deleteJob("job", "test");
-//        quartzManager.addJob(BaseDataFetchJob.class, "job", "test", "0 * * * * ?", jobData);
-//
-//        jobData.put("name","2");
-//        quartzManager.deleteJob("job2", "test");
-//        quartzManager.addJob(BaseDataFetchJob.class, "job2", "test", "10 * * * * ?", jobData);
-//
-//        jobData.put("name","3");
-//        quartzManager.deleteJob("job3", "test2");
-//        quartzManager.addJob(BaseDataFetchJob.class, "job3", "test2", "15 * * * * ?", jobData);
-
     }
-
-
 
     private List<String> toKeysList(String keys) {
         List<String> keyList = null;
@@ -136,10 +111,10 @@ public class DeviceDataFetchJobController  extends BaseController {
         return result;
     }
 
-    private String getKeys(){
-
-        return "pluginName";
-    }
+//    private String getKeys(){
+//
+//        return "pluginName";
+//    }
 
     private Boolean hasJob(String jobName){
         List<Map<String, Object>> list = quartzManager.queryAllJob();

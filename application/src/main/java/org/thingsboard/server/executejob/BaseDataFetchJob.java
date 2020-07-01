@@ -14,6 +14,7 @@ import org.thingsboard.server.common.transport.TransportContext;
 import org.thingsboard.server.common.transport.TransportService;
 import org.thingsboard.server.common.transport.TransportServiceCallback;
 import org.thingsboard.server.common.transport.adaptor.JsonConverter;
+import org.thingsboard.server.controller.idscontroller.ConstantConfValue;
 import org.thingsboard.server.gen.transport.TransportProtos;
 import org.thingsboard.server.plugin.bean.DataFetchPlugin;
 import org.thingsboard.server.transport.http.DeviceApiController;
@@ -41,14 +42,14 @@ public class BaseDataFetchJob implements BaseJob {
     public void execute(JobExecutionContext context) throws JobExecutionException {
 
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-        String jarPath = jobDataMap.get("jarPath").toString();
-        String className = jobDataMap.get("className").toString();
-        String token = jobDataMap.getString("token").toString();
+        String jarPath = jobDataMap.get(ConstantConfValue.dataFetchJobDataParamJarPath).toString();
+        String className = jobDataMap.get(ConstantConfValue.dataFetchJobDataParamClassName).toString();
+        String deviceToken = jobDataMap.getString(ConstantConfValue.dataFetchJobDataParamToken).toString();
 
         Map<String,String> configs = new HashMap<>();
-        jobDataMap.remove("jarPath");
-        jobDataMap.remove("className");
-        jobDataMap.remove("token");
+        jobDataMap.remove(ConstantConfValue.dataFetchJobDataParamJarPath);
+        jobDataMap.remove(ConstantConfValue.dataFetchJobDataParamClassName);
+        jobDataMap.remove(ConstantConfValue.dataFetchJobDataParamToken);
         for(String key : jobDataMap.keySet()){
             configs.put(key,jobDataMap.get(key).toString());
         }
@@ -63,7 +64,6 @@ public class BaseDataFetchJob implements BaseJob {
 //        jobData.put("className",plugin.getClassName());
 
         File jarFile = new File(jarPath);
-
         URL url = null;
         try {
             url = jarFile.toURI().toURL();
@@ -73,9 +73,7 @@ public class BaseDataFetchJob implements BaseJob {
             Map<String, String> map = service.executeAsyncService(configs);
             if(map.get("status") =="true"){
                 String  json = map.get("data");
-                System.out.println(json);
-                String deviceToken = token;//"nTYuCpzK0UpciwIJQYaz";
-
+//                System.out.println(json);
                 DeferredResult<ResponseEntity> responseWriter = new DeferredResult<ResponseEntity>();
                 transportContext.getTransportService().process(ValidateDeviceTokenRequestMsg.newBuilder().setToken(deviceToken).build(),
                         new DeviceAuthCallback(transportContext, responseWriter, sessionInfo -> {
@@ -93,7 +91,6 @@ public class BaseDataFetchJob implements BaseJob {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
     }
 
     private static class DeviceAuthCallback implements TransportServiceCallback<ValidateDeviceCredentialsResponseMsg> {

@@ -15,7 +15,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.thingsboard.server.plugin.DataFetchPluginManager;
+import org.thingsboard.server.bean.SocketMessage;
+import org.thingsboard.server.plugin.DataFetchProtoHandlePluginManager;
 import org.thingsboard.server.plugin.bean.DataFetchPlugin;
 import org.thingsboard.server.service.plugin.AsyncService;
 import org.thingsboard.server.service.sys.SysInfoService;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import org.thingsboard.server.plugin.bean.SocketMessage;
 
 //@RestController
 @Controller
@@ -38,7 +38,7 @@ public class IndexController {
     private AsyncService asyncPluginService;
 
     @Autowired
-    private DataFetchPluginManager dfp;
+    private DataFetchProtoHandlePluginManager dfp;
 //    @RequestMapping("/")
 //    public String getMsg()
 //    {

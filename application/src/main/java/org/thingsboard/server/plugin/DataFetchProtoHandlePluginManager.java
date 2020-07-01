@@ -109,43 +109,32 @@ public class DataFetchProtoHandlePluginManager {
      //TODO: 在plugin中写入/更新配置信息
     public Boolean addProto(DataFetchPlugin pluginInfo)  {
 
-        if (pluginInfo==null || pluginInfo.getName().isEmpty() || pluginInfo.getStatus().toString().isEmpty() || pluginInfo.getClassName().isEmpty()){
+        boolean sucess = false;
+    /*    if (pluginInfo==null || pluginInfo.getName().isEmpty() || pluginInfo.getStatus().toString().isEmpty() || pluginInfo.getClassName().isEmpty()){
             return false;
-        }
-        Boolean sucess = null;
-        FileOutputStream out = null;
+        }*/
         //1.创建文档
         Document doc= DocumentHelper.createDocument();
         Element plugins = doc.addElement("plugins");
         try {
             List<DataFetchPlugin> dataFetchPlugins = this.updatePluginList();
-            for (DataFetchPlugin dataFetchPlugin:dataFetchPlugins){
-                if (dataFetchPlugin.getName().equals(pluginInfo.getName())){
-                    dataFetchPlugin.setJar(pluginInfo.getJar());
-                    dataFetchPlugin.setClassName(pluginInfo.getClassName());
-                    dataFetchPlugin.setStatus(pluginInfo.getStatus());
-                    dataFetchPlugin.setRequires(pluginInfo.getRequires());
+            if(dataFetchPlugins != null){
+                for (DataFetchPlugin dataFetchPlugin:dataFetchPlugins){
+                  boolean hasPlugin = dataFetchPlugin.getName().equals(pluginInfo.getName());
+                  if (hasPlugin){
+                        dataFetchPlugin.setJar(pluginInfo.getJar());
+                        dataFetchPlugin.setClassName(pluginInfo.getClassName());
+                        dataFetchPlugin.setStatus(pluginInfo.getStatus());
+                        dataFetchPlugin.setRequires(pluginInfo.getRequires());
+                    }
+                    addElement(plugins, dataFetchPlugin);
                 }
-                //添加节点及属性
-                Element plugin = plugins.addElement("plugin");
-                Element name = plugin.addElement("name");
-                Element jar = plugin.addElement("jar");
-                Element aClass = plugin.addElement("class");
-                Element status = plugin.addElement("status");
-                name.addText(dataFetchPlugin.getName());
-                jar.addText(dataFetchPlugin.getJar());
-                aClass.addText(dataFetchPlugin.getClassName());
-                status.addText(dataFetchPlugin.getStatus().toString());
-
-                Element requires1 = plugin.addElement("requires");
-                for (int size= 0; size<dataFetchPlugin.getRequires().size(); size++){
-                    Element require = requires1.addElement("require");
-                    require.addAttribute("name", "require"+size);
-                    require.addText(dataFetchPlugin.getRequires().get(size));
-                }
-                System.out.println(plugin.getData() + "-----------------------------------");
             }
-          return write2Xml(doc);
+                //添加节点及属性
+            addElement(plugins, pluginInfo);
+
+
+            return write2Xml(doc);
         } catch (IOException e) {
             sucess = false;
             e.printStackTrace();
@@ -154,6 +143,26 @@ public class DataFetchProtoHandlePluginManager {
             e.printStackTrace();
         }
         return sucess;
+    }
+
+    private void addElement(Element plugins, DataFetchPlugin dataFetchPlugin) {
+        //添加节点及属性
+        Element plugin = plugins.addElement("plugin");
+        Element name = plugin.addElement("name");
+        Element jar = plugin.addElement("jar");
+        Element aClass = plugin.addElement("class");
+        Element status = plugin.addElement("status");
+        name.addText(dataFetchPlugin.getName());
+        jar.addText(dataFetchPlugin.getJar());
+        aClass.addText(dataFetchPlugin.getClassName());
+        status.addText(dataFetchPlugin.getStatus().toString());
+
+        Element requires1 = plugin.addElement("requires");
+        for (int size = 0; size < dataFetchPlugin.getRequires().size(); size++) {
+            Element require = requires1.addElement("require");
+            require.addAttribute("name", "require" + size);
+            require.addText(dataFetchPlugin.getRequires().get(size));
+        }
     }
 
 
@@ -169,6 +178,9 @@ public class DataFetchProtoHandlePluginManager {
         try {
             List<DataFetchPlugin> dataFetchPlugins = this.updatePluginList();
 
+            if (dataFetchPlugins == null){
+
+            }
             for (DataFetchPlugin dataFetchPlugin:dataFetchPlugins){
                 if (dataFetchPlugin.getName().equals(pluginInfo.getName())){
                     dataFetchPlugins.remove(dataFetchPlugin);
@@ -187,28 +199,15 @@ public class DataFetchProtoHandlePluginManager {
     }
     private void addPluginElement(Element plugins, DataFetchPlugin dataFetchPlugin){
         //添加节点及属性
-        Element plugin = plugins.addElement("plugin");
-        Element name = plugin.addElement("name");
-        Element jar = plugin.addElement("jar");
-        Element aClass = plugin.addElement("class");
-        Element status = plugin.addElement("status");
-        name.addText(dataFetchPlugin.getName());
-        jar.addText(dataFetchPlugin.getJar());
-        aClass.addText(dataFetchPlugin.getClassName());
-        status.addText(dataFetchPlugin.getStatus().toString());
-        Element requires1 = plugin.addElement("requires");
-        for (int size= 0; size<dataFetchPlugin.getRequires().size(); size++){
-            Element require = requires1.addElement("require");
-            require.addAttribute("name", "require"+size);
-            require.addText(dataFetchPlugin.getRequires().get(size));
-        }
+        addElement(plugins, dataFetchPlugin);
     }
     private boolean write2Xml(Document doc){
         boolean status = true;
         FileOutputStream out = null;
 
         try {
-            out = new FileOutputStream(this.xmlPluginFolder);
+//            out = new FileOutputStream(this.xmlPluginFolder);
+           out = new FileOutputStream(System.getProperty("user.dir") + ConstantConfValue.protoHandlePluginUpload + "\\plugin.xml");
             OutputFormat format= OutputFormat.createPrettyPrint();   //漂亮格式：有空格换行
             format.setEncoding("UTF-8");
             //1.创建写出对象

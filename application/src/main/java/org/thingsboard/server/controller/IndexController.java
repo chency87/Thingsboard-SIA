@@ -80,7 +80,7 @@ public class IndexController {
         CpuPerc cpu = sigar.getCpuPerc();
 //		sysInfo.printCpuPerc(cpu);
         messagingTemplate.convertAndSend("/topic/callback",sysInfo.printCpuPerc());
-        System.out.println(sysInfo.printCpuPerc());
+    //    System.out.println(sysInfo.printCpuPerc());
         return "callback";
 
     }

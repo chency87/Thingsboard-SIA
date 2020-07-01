@@ -13,6 +13,7 @@ public class QuartzManager {
 
     @Autowired
     private Scheduler scheduler;
+
     public void startScheduler() {
         try {
             scheduler.start();
@@ -113,6 +114,40 @@ public class QuartzManager {
         }
         return jobList;
     }
+    /**
+     * 执行某个用户的所有任务
+     *
+     * @param jobGroupName
+     *            任务组名
+     */
+    public void execAllJob(String jobGroupName){
+        List<Map<String, Object>> list = queryAllJob();
+        for(Map<String, Object> map : list){
+            String jobName = map.get("jobName").toString();
+            String jobGroup = map.get("jobGroupName").toString();
+            if (jobGroup == jobGroupName) {
+                resumeJob(jobName, jobGroup);
+            }
+        }
+    }
+
+    /**
+     * 停止某个用户的所有任务
+     *
+     * @param jobGroupName
+     *            任务组名
+     */
+    public void stopAllJob(String jobGroupName){
+        List<Map<String, Object>> list = queryAllJob();
+        for(Map<String, Object> map : list){
+            String jobName = map.get("jobName").toString();
+            String jobGroup = map.get("jobGroupName").toString();
+            if (jobGroup == jobGroupName) {
+                pauseJob(jobName, jobGroup);
+            }
+        }
+    }
+
 
     /**
      * 删除任务一个job
@@ -144,6 +179,8 @@ public class QuartzManager {
             e.printStackTrace();
         }
     }
+
+
     /**
      * 恢复一个job
      *

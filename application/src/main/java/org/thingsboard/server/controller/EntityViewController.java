@@ -50,6 +50,7 @@ import org.thingsboard.server.dao.model.ModelConstants;
 import org.thingsboard.server.service.security.model.SecurityUser;
 import org.thingsboard.server.service.security.permission.Operation;
 import org.thingsboard.server.service.security.permission.Resource;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ import static org.thingsboard.server.controller.CustomerController.CUSTOMER_ID;
 /**
  * Created by Victor Basanets on 8/28/2017.
  */
+@ApiIgnore
 @RestController
 @RequestMapping("/api")
 @Slf4j

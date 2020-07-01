@@ -60,10 +60,7 @@ public class SwaggerConfiguration {
     private String contactUrl;
     @Value("${swagger.contact.email}")
     private String contactEmail;
-    @Value("${swagger.license.title}")
-    private String licenseTitle;
-    @Value("${swagger.license.url}")
-    private String licenseUrl;
+
     @Value("${swagger.version}")
     private String version;
 
@@ -128,8 +125,6 @@ public class SwaggerConfiguration {
                 .title(title)
                 .description(description)
                 .contact(new Contact(contactName, contactUrl, contactEmail))
-                .license(licenseTitle)
-                .licenseUrl(licenseUrl)
                 .version(version)
                 .build();
     }

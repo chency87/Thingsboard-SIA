@@ -35,9 +35,11 @@ import org.thingsboard.server.dao.event.EventService;
 import org.thingsboard.server.dao.model.ModelConstants;
 import org.thingsboard.server.service.security.permission.Operation;
 import org.thingsboard.server.service.security.permission.Resource;
-
+import springfox.documentation.annotations.ApiIgnore;
+@ApiIgnore
 @RestController
 @RequestMapping("/api")
+
 public class EventController extends BaseController {
 
     @Autowired

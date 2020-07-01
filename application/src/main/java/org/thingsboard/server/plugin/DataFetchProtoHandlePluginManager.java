@@ -84,16 +84,31 @@ public class DataFetchProtoHandlePluginManager {
         return pluginList;
     }
     public DataFetchPlugin getPluginInfoFromList(String pluginName){
-        for(DataFetchPlugin plugin : pluginList) {
-            if(plugin.getName().equals(pluginName))
-            {
-                return plugin;
+
+        try {
+            pluginList = updatePluginList();
+            for(DataFetchPlugin plugin : pluginList) {
+                if(plugin.getName().equals(pluginName))
+                {
+                    return plugin;
+                }
             }
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
         return null;
     }
     public List<DataFetchPlugin> getPluginList(){
-        return  this.pluginList;
+        try {
+            return  updatePluginList();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public boolean hasPlugin(String pluginName){

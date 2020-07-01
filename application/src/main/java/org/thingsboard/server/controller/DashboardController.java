@@ -43,10 +43,11 @@ import org.thingsboard.server.common.data.page.TimePageData;
 import org.thingsboard.server.common.data.page.TimePageLink;
 import org.thingsboard.server.service.security.permission.Operation;
 import org.thingsboard.server.service.security.permission.Resource;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.HashSet;
 import java.util.Set;
-
+@ApiIgnore
 @RestController
 @RequestMapping("/api")
 public class DashboardController extends BaseController {

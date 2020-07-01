@@ -59,7 +59,7 @@ public class ProtoHandlePluginController  extends BaseController {
         DataFetchPlugin dataFetchPlugin = new DataFetchPlugin();
         dataFetchPlugin.setClassName(className);
         dataFetchPlugin.setName(name);
-        dataFetchPlugin.setJar(new File(folder, name).getAbsolutePath());
+        dataFetchPlugin.setJar(new File(folder, name+".jar").getAbsolutePath());
         dataFetchPlugin.setStatus(status);
 
         List<String> requiresList = Arrays.asList(requires.split(","));

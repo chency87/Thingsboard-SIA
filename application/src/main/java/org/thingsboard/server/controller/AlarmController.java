@@ -43,8 +43,10 @@ import org.thingsboard.server.common.data.page.TimePageData;
 import org.thingsboard.server.common.data.page.TimePageLink;
 import org.thingsboard.server.service.security.permission.Operation;
 import org.thingsboard.server.service.security.permission.Resource;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
+@ApiIgnore
 @RequestMapping("/api")
 public class AlarmController extends BaseController {
 

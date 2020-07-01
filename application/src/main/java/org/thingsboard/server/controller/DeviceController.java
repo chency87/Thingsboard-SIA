@@ -18,6 +18,7 @@ package org.thingsboard.server.controller;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,10 +46,12 @@ import org.thingsboard.server.common.data.page.TextPageData;
 import org.thingsboard.server.common.data.page.TextPageLink;
 import org.thingsboard.server.common.data.security.DeviceCredentials;
 import org.thingsboard.server.controller.claim.data.ClaimRequest;
+import org.thingsboard.server.controller.idscontroller.ConstantConfValue;
 import org.thingsboard.server.dao.device.claim.ClaimResponse;
 import org.thingsboard.server.dao.device.claim.ClaimResult;
 import org.thingsboard.server.dao.exception.IncorrectParameterException;
 import org.thingsboard.server.dao.model.ModelConstants;
+import org.thingsboard.server.service.ids.QuartzManager;
 import org.thingsboard.server.service.security.model.SecurityUser;
 import org.thingsboard.server.service.security.permission.Operation;
 import org.thingsboard.server.service.security.permission.Resource;
@@ -57,6 +60,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -65,6 +69,10 @@ public class DeviceController extends BaseController {
 
     private static final String DEVICE_ID = "deviceId";
     private static final String DEVICE_NAME = "deviceName";
+
+
+    @Autowired
+    private QuartzManager quartzManager;
 
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.GET)
@@ -132,6 +140,10 @@ public class DeviceController extends BaseController {
                     ActionType.DELETED, null, strDeviceId);
 
             deviceStateService.onDeviceDeleted(device);
+            if(hasJob(deviceId.toString())){
+                quartzManager.deleteJob(deviceId.toString(),"DEVICE" + getCurrentUser().getEmail()+ConstantConfValue.dataFetchJobGroupNameSuffix);
+            }
+
         } catch (Exception e) {
             logEntityAction(emptyId(EntityType.DEVICE),
                     null,
@@ -478,5 +490,14 @@ public class DeviceController extends BaseController {
             return secretKey;
         }
         return DataConstants.DEFAULT_SECRET_KEY;
+    }
+
+    private Boolean hasJob(String jobName){
+        List<Map<String, Object>> list = quartzManager.queryAllJob();
+        for(Map<String, Object> map : list){
+            String name = map.get("jobName").toString();
+            if (jobName == name) return true;
+        }
+        return false;
     }
 }

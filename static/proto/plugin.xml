@@ -16,4 +16,16 @@
       <require name="require6">attr</require>
     </requires>
   </plugin>
+  <plugin>
+    <name>cn.sia.sec-1.0</name>
+    <jar>D:\2020612sec\Thingsboard-SIA\static\proto\cn.sia.sec-1.0.jar</jar>
+    <class>cn.sia.sec.ClassName</class>
+    <status>true</status>
+    <requires>
+      <require name="require0">ip</require>
+      <require name="require1">port</require>
+      <require name="require2">dst</require>
+      <require name="require3">falg</require>
+    </requires>
+  </plugin>
 </plugins>

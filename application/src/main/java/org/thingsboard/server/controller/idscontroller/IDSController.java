@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.thingsboard.server.bean.IDSConsole;
 import org.thingsboard.server.bean.Port;
 import org.thingsboard.server.bean.Signatures;
+import org.thingsboard.server.dao.CountSig;
 import org.thingsboard.server.service.ids.IDSService;
 
 import java.security.Signature;
@@ -22,7 +23,6 @@ public class IDSController {
 
     @RequestMapping(value = "/ids/alertinformation", method = RequestMethod.GET)
     public List<IDSConsole> getAlertInformation(){
-
 
         return idsService.getAlertInformation();
     }
@@ -55,5 +55,10 @@ public class IDSController {
         return idsService.getSignatures();
     }
 
+    @RequestMapping(value = "/ids/signaturesddd")
+    public List<CountSig> getSignatures2(){
+
+        return idsService.getSignatures2();
+    }
 
 }

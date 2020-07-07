@@ -159,20 +159,14 @@ public class DataFetchProtoHandlePluginManager {
     }
 
     //TODO: 在plugin中删除插件信息
-    public Boolean deleteProto(DataFetchPlugin pluginInfo)  {
-        if (pluginInfo==null || pluginInfo.getName().isEmpty()){
-            return false;
-        }
-        FileOutputStream out = null;
-        //1.创建文档
+    public Boolean deleteProto(String name) throws MalformedURLException, DocumentException {
         Document doc=DocumentHelper.createDocument();
         Element plugins = doc.addElement("plugins");
-        try {
-            List<DataFetchPlugin> dataFetchPlugins = this.updatePluginList();
 
+            List<DataFetchPlugin> dataFetchPlugins = this.updatePluginList();
             if (dataFetchPlugins == null){
                 for (DataFetchPlugin dataFetchPlugin:dataFetchPlugins){
-                    if (dataFetchPlugin.getName().equals(pluginInfo.getName())){
+                    if (dataFetchPlugin.getName().equals(name)){
                         dataFetchPlugins.remove(dataFetchPlugin);
                     }else {
                         return false;
@@ -180,14 +174,7 @@ public class DataFetchProtoHandlePluginManager {
                     addElement(plugins, dataFetchPlugin);
                 }
             }
-
            return write2Xml(doc);
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     /**

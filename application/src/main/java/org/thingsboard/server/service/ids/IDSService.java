@@ -5,13 +5,18 @@ import org.springframework.stereotype.Service;
 import org.thingsboard.server.bean.IDSConsole;
 import org.thingsboard.server.bean.Port;
 import org.thingsboard.server.bean.Signatures;
+import org.thingsboard.server.dao.CountSig;
+import org.thingsboard.server.dao.model.sql.EventSnortEntity;
 import org.thingsboard.server.dao.model.sql.IphdrEntity;
-import org.thingsboard.server.dao.sql.secgate.IphdrRepository;
+import org.thingsboard.server.dao.model.sql.SensorEntity;
+import org.thingsboard.server.dao.sql.event.EventRepository;
+import org.thingsboard.server.dao.sql.secgate.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class IDSService {
@@ -19,22 +24,30 @@ public class IDSService {
     @Autowired
     IphdrRepository iphdrRepository;
 
+    @Autowired
+    SensorRepository sensorRepository;
+
+    @Autowired
+    EventSnortRepository eventSnortRepository;
+
+
+    @Autowired
+    IphdrRepository iphdRepository;
+
+    @Autowired
+    TcphdrRepoeitory tcphdrRepoeitory;
+
+    @Autowired
+    UdphdrRepository  udphdrRepository;
+
+    @Autowired
+    SignatureRepository signatureRepository;
+
+
+
+    //TODO：Alert Information
     public List<IDSConsole> getAlertInformation() {
-
-        ArrayList<IDSConsole> idsConsolesTest = new ArrayList<>();
         ArrayList<IDSConsole> idsConsoles = new ArrayList<>();
-        IDSConsole idsConsole1 = new IDSConsole();
-        IDSConsole idsConsole2 = new IDSConsole();
-
-        idsConsole1.setName("TCP Alerts");
-        idsConsole1.setNum(1500);
-        idsConsole1.setProportion(50);
-
-        idsConsole2.setName("UDP Alerts");
-        idsConsole2.setNum(1500);
-        idsConsole2.setProportion(50);
-        idsConsoles.add(idsConsole1);
-        idsConsoles.add(idsConsole2);
 
         boolean id = iphdrRepository.existsById(2);
         int icmpSize = iphdrRepository.findIphdrEntitiesByIpProto(1).size();
@@ -47,14 +60,14 @@ public class IDSService {
         idsConsoles.add(new IDSConsole("TCP Alerts",tcpSize, (icmpSize/total)*100));
         idsConsoles.add(new IDSConsole("Total Alerts",total, 100));
 
-//        return idsConsoles;
-        return idsConsolesTest;
+        return idsConsoles;
     }
 
+    //TODO:Sensors information
     public List<IDSConsole> getSensors() {
 
         ArrayList<IDSConsole> idsConsoles = new ArrayList<>();
-        IDSConsole idsConsole1 = new IDSConsole();
+/*        IDSConsole idsConsole1 = new IDSConsole();
         IDSConsole idsConsole2 = new IDSConsole();
 
         idsConsole1.setName("sensor1");
@@ -65,14 +78,24 @@ public class IDSService {
         idsConsole2.setNum(500);
         idsConsole2.setProportion(50);
         idsConsoles.add(idsConsole1);
-        idsConsoles.add(idsConsole2);
+        idsConsoles.add(idsConsole2);*/
+        IDSConsole idsConsole = new IDSConsole();
+        List<SensorEntity> sensorEntities = sensorRepository.findAll();
+        for (SensorEntity sensorEntity : sensorEntities){
+            Integer sid = sensorEntity.getSid();
+//            List<Object> bySidAndSignature = eventSnortRepository.findBySidAndSignature(sid);
+            long count = eventSnortRepository.getSigntureCount(sid).size();
+            Integer alertCount = eventSnortRepository.getAlertCount(sid);
+            String hostname = sensorEntity.getHostname();
+            idsConsoles.add(new IDSConsole(hostname, (int) count,alertCount));
+        }
 
         return idsConsoles;
     }
 
     public List<IDSConsole> getTopSources() {
 
-        ArrayList<IDSConsole> idsConsoles = new ArrayList<>();
+      /* */ ArrayList<IDSConsole> idsConsoles = new ArrayList<>();
         IDSConsole idsConsole1 = new IDSConsole();
         IDSConsole idsConsole2 = new IDSConsole();
 
@@ -85,6 +108,11 @@ public class IDSService {
         idsConsole2.setProportion(50);
         idsConsoles.add(idsConsole1);
         idsConsoles.add(idsConsole2);
+
+        List<Object> ipSrcAndCount = iphdrRepository.getIPSrcAndCount();
+        List<IphdrEntity> all = iphdrRepository.findAll();
+
+
 
         return idsConsoles;
     }
@@ -131,5 +159,10 @@ public class IDSService {
         idsConsoles.add(signatures1);
         idsConsoles.add(signatures2);
         return idsConsoles;
+    }
+
+    public List<CountSig> getSignatures2() {
+
+      return eventSnortRepository.getSigntureCount2(1);
     }
 }

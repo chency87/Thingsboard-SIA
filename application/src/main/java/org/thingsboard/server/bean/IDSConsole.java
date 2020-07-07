@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IDSConsole {
 
-    //统计名称
+    //统计名称  / 设备名称
     private String name;
 
-    //数量
+    //数量  /  signture 数量
     private Integer num;
 
-    //占比
+    //占比  /  报警个数
     private Integer proportion;
 }

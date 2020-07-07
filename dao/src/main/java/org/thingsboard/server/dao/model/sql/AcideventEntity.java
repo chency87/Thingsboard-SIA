@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-//@Table(name = "acidEvent")//表名
+@Table(name = "acidEvent")//表名
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,6 +37,6 @@ public class AcideventEntity implements Serializable {
     private Long ipDst;
 
     private Integer ipProto;
-    private String  layer4Sport; //
-    private String  layer4Dport; //
+//    private int  layer4Sport; //
+//    private int  layer4Dport; //
 }

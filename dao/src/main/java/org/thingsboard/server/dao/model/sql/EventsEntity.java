@@ -5,14 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
 
 @Entity
-@Table(name = "udphdr")//表名
+@Table(name = "event")//表名
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(value = DoubleKeys.class)
-public class UdphdrEntity extends DoubleKeys{
+public class EventsEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -22,8 +25,6 @@ public class UdphdrEntity extends DoubleKeys{
     @Column(name="sid")
     private Integer sid;
 
-    private String udp_sport;
-    private String udp_dport;
-    private Long udp_len;
-    private int udp_csum;
+    private int signature;
+    private Date timestamp;
 }

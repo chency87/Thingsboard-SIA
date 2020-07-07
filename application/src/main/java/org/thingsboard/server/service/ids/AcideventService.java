@@ -3,18 +3,29 @@ package org.thingsboard.server.service.ids;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thingsboard.server.dao.model.sql.AcideventEntity;
-import org.thingsboard.server.dao.model.sql.DataEntity;
-import org.thingsboard.server.dao.model.sql.IphdrEntity;
-import org.thingsboard.server.dao.model.sql.UdphdrEntity;
-import org.thingsboard.server.dao.sql.secgate.AcideventRepository;
+import org.thingsboard.server.dao.sql.secgate.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-public interface AcideventService {
+public class AcideventService {
+    /**
+     *
+     */
     @Autowired
     private AcideventRepository aciDao;
+    @Autowired
+    private EventsRepository eventDao;
+
+    @Autowired
+    private IphdrRepository iphdrDao;
+
+    @Autowired
+    private UdphdrRepository udphdrDao;
+
+    @Autowired
+    private DataRepository dataDao;
 
     public List<AcideventEntity> findAllAcidevent() {
         // TODO Auto-generated method stub
@@ -28,6 +39,45 @@ public interface AcideventService {
         return aciDao.findById(cid);
     }
 
+    public int queryAbnormaltraffic() {
+        // TODO Auto-generated method stub
+        System.out.println(eventDao.count());
+        return  eventDao.queryeventCount();
+    }
+
+
+
+    public int querydevicecount() {
+        // TODO Auto-generated method stub
+        return iphdrDao.queryipsrcCount();
+    }
+
+
+
+    public int proCount() {
+        // TODO Auto-generated method stub
+        int sum=0;
+        List<Integer> ii = iphdrDao.queryIpprogroup();
+        for(int i=0; i<ii.size(); i++) {
+//            Integer c = ii.get(i);
+            Number num = (Number) ii.get(i);
+            Integer c=num.intValue();
+            if(c==1) {
+                sum = udphdrDao.queryTcpUdpport()+1;
+                break;
+            }
+            else {
+                sum = udphdrDao.queryTcpUdpport();
+            }
+        }
+        return sum;
+    }
+
+
+    public double cacheData() {
+        // TODO Auto-generated method stub
+        return dataDao.queryCachedataCount();
+    }
     public List<Object> queryAcid() {
         // TODO Auto-generated method stub
         List<Object>  list = new ArrayList<Object>();

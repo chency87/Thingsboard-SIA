@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugins>
+    <plugin>
+        <name>ModbusTCP2</name>
+        <jar>D:/cn.sia.sec-1.0-SNAPSHOT.jar</jar>
+        <class>cn.sia.sec.proto.plugin.ModbusTcpServiceImpl</class>
+        <status>true</status>
+        <requires>
+            <require name="port">port</require>
+            <require name="ip">ip</require>
+            <require name="funCode">funCode</require>
+            <require name="slaveId">slaveId</require>
+            <require name="address">address</require>
+            <require name="quantity">quantity</require>
+            <require name="attr">attr</require>
+        </requires>
+    </plugin>
+
+</plugins>

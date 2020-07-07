@@ -33,9 +33,11 @@ import org.thingsboard.server.common.data.widget.WidgetType;
 import org.thingsboard.server.dao.model.ModelConstants;
 import org.thingsboard.server.service.security.permission.Operation;
 import org.thingsboard.server.service.security.permission.Resource;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
+@ApiIgnore
 @RestController
 @RequestMapping("/api")
 public class WidgetTypeController extends BaseController {

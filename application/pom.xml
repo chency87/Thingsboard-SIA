@@ -46,11 +46,7 @@
             <artifactId>sigar</artifactId>
             <version>1.6.4</version>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
+
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
@@ -58,6 +54,14 @@
         </dependency>
 
 
+        <!--html-->
+    <!--    <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <version>2.3.0.RELEASE</version>
+        </dependency>-->
+
+        <!--htmljieshu-->
         <dependency>
             <groupId>de.ruedigermoeller</groupId>
             <artifactId>fst</artifactId>

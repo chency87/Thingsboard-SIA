@@ -36,10 +36,11 @@ import org.thingsboard.server.common.data.relation.EntityRelationInfo;
 import org.thingsboard.server.common.data.relation.EntityRelationsQuery;
 import org.thingsboard.server.common.data.relation.RelationTypeGroup;
 import org.thingsboard.server.service.security.permission.Operation;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
-
+@ApiIgnore
 @RestController
 @RequestMapping("/api")
 public class EntityRelationController extends BaseController {

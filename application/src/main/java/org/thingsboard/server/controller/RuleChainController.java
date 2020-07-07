@@ -58,6 +58,7 @@ import org.thingsboard.server.service.script.JsInvokeService;
 import org.thingsboard.server.service.script.RuleNodeJsScriptEngine;
 import org.thingsboard.server.service.security.permission.Operation;
 import org.thingsboard.server.service.security.permission.Resource;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
+@ApiIgnore
 @Slf4j
 @RestController
 @RequestMapping("/api")

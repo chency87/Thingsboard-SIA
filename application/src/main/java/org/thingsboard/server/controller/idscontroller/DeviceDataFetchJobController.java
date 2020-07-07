@@ -58,7 +58,6 @@ public class DeviceDataFetchJobController  extends BaseController {
         quartzManager.stopAllJob("DEVICE"+getCurrentUser().getEmail()+ConstantConfValue.dataFetchJobGroupNameSuffix);
     }
 
-    //
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/plugin/exec", method = RequestMethod.POST, params = {"status","cron"})
     @ResponseBody

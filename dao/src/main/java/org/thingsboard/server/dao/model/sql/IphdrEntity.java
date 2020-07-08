@@ -30,34 +30,34 @@ public class IphdrEntity {
     private String ipDst;
 
     @Column(name = "ip_ver")
-    private Integer ipVer;
+    private int ipVer;
 
     @Column(name = "ip_hlen")
-    private Integer ipHlen;
+    private int ipHlen;
 
     @Column(name = "ip_tos")
-    private Integer ipTos;
+    private int ipTos;
 
     @Column(name = "ip_len")
-    private Integer ipLen;
+    private int ipLen;
 
     @Column(name = "ip_id")
-    private Integer ipId;
+    private int ipId;
 
     @Column(name = "ip_flags")
-    private Integer ipFlags;
+    private int ipFlags;
 
     @Column(name = "ip_off")
-    private Integer ipOff;
+    private int ipOff;
 
     @Column(name = "ip_ttl")
-    private Integer ipTtl;
+    private int ipTtl;
 
     @Column(name = "ip_proto")
-    private Integer ipProto;
+    private int ipProto;
 
     @Column(name = "ip_csum")
-    private Integer ipCsum;
+    private int ipCsum;
 
 
 }

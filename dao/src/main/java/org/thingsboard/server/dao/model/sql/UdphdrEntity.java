@@ -22,8 +22,15 @@ public class UdphdrEntity extends DoubleKeys{
     @Column(name="sid")
     private Integer sid;
 
-    private String udp_sport;
-    private String udp_dport;
-    private Long udp_len;
-    private int udp_csum;
+    @Column(name="udp_sport")
+    private Integer udpSport;
+
+    @Column(name="udp_dport")
+    private Integer udpDport;
+
+    @Column(name="udp_len")
+    private Long udpLen;
+
+    @Column(name="udp_csum")
+    private int udpCsum;
 }

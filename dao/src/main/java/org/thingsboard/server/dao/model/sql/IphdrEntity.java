@@ -24,10 +24,10 @@ public class IphdrEntity {
     private Integer sid;
 
     @Column(name = "ip_src")
-    private String ipSrc;
+    private long ipSrc;
 
     @Column(name = "ip_dst")
-    private String ipDst;
+    private long ipDst;
 
     @Column(name = "ip_ver")
     private int ipVer;

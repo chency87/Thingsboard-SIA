@@ -1,4 +1,4 @@
-package org.thingsboard.server.dao;
+package org.thingsboard.server.dao.sql.secgate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountSig {
+public class CountDstIP {
    private long count;
-   private int signature;
+   private long ipDst;
 }

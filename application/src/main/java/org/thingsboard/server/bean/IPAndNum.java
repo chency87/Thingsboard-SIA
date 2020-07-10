@@ -1,5 +1,6 @@
 package org.thingsboard.server.bean;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,11 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Port {
+public class IPAndNum {
 
-    //端口号
-    private Integer port;
-
-    //数量
     private long count;
+    private String ip;
 }

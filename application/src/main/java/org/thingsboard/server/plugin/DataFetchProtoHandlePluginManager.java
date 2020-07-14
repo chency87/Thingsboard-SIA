@@ -145,10 +145,8 @@ public class DataFetchProtoHandlePluginManager {
                     addElement(plugins, dataFetchPlugin);
                 }
             }
-                //添加节点及属性
+            //添加节点及属性
             addElement(plugins, pluginInfo);
-
-
             return write2Xml(doc);
         } catch (IOException e) {
             sucess = false;
@@ -160,62 +158,30 @@ public class DataFetchProtoHandlePluginManager {
         return sucess;
     }
 
-    private void addElement(Element plugins, DataFetchPlugin dataFetchPlugin) {
-        //添加节点及属性
-        Element plugin = plugins.addElement("plugin");
-        Element name = plugin.addElement("name");
-        Element jar = plugin.addElement("jar");
-        Element aClass = plugin.addElement("class");
-        Element status = plugin.addElement("status");
-        name.addText(dataFetchPlugin.getName());
-        jar.addText(dataFetchPlugin.getJar());
-        aClass.addText(dataFetchPlugin.getClassName());
-        status.addText(dataFetchPlugin.getStatus().toString());
-
-        Element requires1 = plugin.addElement("requires");
-        for (int size = 0; size < dataFetchPlugin.getRequires().size(); size++) {
-            Element require = requires1.addElement("require");
-            require.addAttribute("name", "require" + size);
-            require.addText(dataFetchPlugin.getRequires().get(size));
-        }
-    }
-
-
-    //TODO: 在plugin中删除插件
-    public Boolean deleteProto(DataFetchPlugin pluginInfo)  {
-        if (pluginInfo==null || pluginInfo.getName().isEmpty()){
-            return false;
-        }
-        FileOutputStream out = null;
-        //1.创建文档
+    //TODO: 在plugin中删除插件信息
+    public Boolean deleteProto(String name) throws MalformedURLException, DocumentException {
         Document doc=DocumentHelper.createDocument();
         Element plugins = doc.addElement("plugins");
-        try {
+
             List<DataFetchPlugin> dataFetchPlugins = this.updatePluginList();
-
             if (dataFetchPlugins == null){
-
-            }
-            for (DataFetchPlugin dataFetchPlugin:dataFetchPlugins){
-                if (dataFetchPlugin.getName().equals(pluginInfo.getName())){
-                    dataFetchPlugins.remove(dataFetchPlugin);
-                }else {
-                    return false;
+                for (DataFetchPlugin dataFetchPlugin:dataFetchPlugins){
+                    if (dataFetchPlugin.getName().equals(name)){
+                        dataFetchPlugins.remove(dataFetchPlugin);
+                    }else {
+                        return false;
+                    }
+                    addElement(plugins, dataFetchPlugin);
                 }
-                addPluginElement(plugins,dataFetchPlugin);
             }
            return write2Xml(doc);
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
-    private void addPluginElement(Element plugins, DataFetchPlugin dataFetchPlugin){
-        //添加节点及属性
-        addElement(plugins, dataFetchPlugin);
-    }
+
+    /**
+     *  将写好内容的doc生成xml文件
+     * @param doc
+     * @return
+     */
     private boolean write2Xml(Document doc){
         boolean status = true;
         FileOutputStream out = null;
@@ -244,5 +210,27 @@ public class DataFetchProtoHandlePluginManager {
         return status;
     }
 
+    /**
+     *  添加xml文件的具体内容
+     * @param plugins
+     * @param dataFetchPlugin
+     */
+    private void addElement(Element plugins, DataFetchPlugin dataFetchPlugin) {
+        Element plugin = plugins.addElement("plugin");
+        Element name = plugin.addElement("name");
+        Element jar = plugin.addElement("jar");
+        Element aClass = plugin.addElement("class");
+        Element status = plugin.addElement("status");
+        name.addText(dataFetchPlugin.getName());
+        jar.addText(dataFetchPlugin.getJar());
+        aClass.addText(dataFetchPlugin.getClassName());
+        status.addText(dataFetchPlugin.getStatus().toString());
 
+        Element requires1 = plugin.addElement("requires");
+        for (int size = 0; size < dataFetchPlugin.getRequires().size(); size++) {
+            Element require = requires1.addElement("require");
+            require.addAttribute("name", "require" + size);
+            require.addText(dataFetchPlugin.getRequires().get(size));
+        }
+    }
 }

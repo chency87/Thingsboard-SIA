@@ -1,31 +1,32 @@
 package org.thingsboard.server.dao.model.sql;
 
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.TypeDef;
 import org.thingsboard.server.dao.util.mapping.JsonStringType;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @EqualsAndHashCode()
 @Entity
 @TypeDef(name = "json", typeClass = JsonStringType.class)
-@Table(name ="icmphdr")
+@Table(name ="event")
 @IdClass(value = DoubleKeys.class)
-public class IcmphdrEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class EventSnortEntity {
+
     @Id
     @Column(name="cid")
     private Integer cid;
     @Id
     @Column(name="sid")
     private Integer sid;
-    private int icmpType;
-    private int icmpCode;
-    private int icmpCsum;
-    private int icmpId;
-    private int icmpSeq;
 
+    @Column(name = "signature")
+    private Integer signature;
+
+    @Column(name = "timestamp")
+    private Date timestamp;
 }

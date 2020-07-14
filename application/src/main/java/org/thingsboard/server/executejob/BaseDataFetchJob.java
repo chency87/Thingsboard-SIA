@@ -44,7 +44,7 @@ public class BaseDataFetchJob implements BaseJob {
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
         String jarPath = jobDataMap.get(ConstantConfValue.dataFetchJobDataParamJarPath).toString();
         String className = jobDataMap.get(ConstantConfValue.dataFetchJobDataParamClassName).toString();
-        String deviceToken = jobDataMap.getString(ConstantConfValue.dataFetchJobDataParamToken).toString();
+        String deviceToken = jobDataMap.getString(ConstantConfValue.dataFetchJobDataParamToken);
 
         Map<String,String> configs = new HashMap<>();
         jobDataMap.remove(ConstantConfValue.dataFetchJobDataParamJarPath);

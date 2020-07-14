@@ -28,7 +28,7 @@ public class SysInfoController {
 	private SysInfoService sysInfo;
 
 
-	@RequestMapping(value = "/webSocket/cpu")
+/*	@RequestMapping(value = "/webSocket/cpu")
 	List<Object> printCpuPerc() throws InterruptedException, SigarException {
 		
         return sysInfo.printCpuPerc();
@@ -46,5 +46,5 @@ public class SysInfoController {
 	List<Object> FileSystemInfo() throws Exception  {
 		return sysInfo.testFileSystemInfo();
 	}
-	
+	*/
 }

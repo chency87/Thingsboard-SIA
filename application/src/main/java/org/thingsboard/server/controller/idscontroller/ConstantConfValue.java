@@ -19,6 +19,15 @@ public class ConstantConfValue {
 
     public final static String dataFetchPluginName="pluginName";
 
+
+    public final static String dataTransportExecJsonAlias = "ExecuteJson";
+
+
+    public final static String dataTransportJobName = "DATATRANSPORT_JOB";
+    public final static String dataTransportJobGroupNameSuffix = "DATATRANSPORT_JOB";
+
+
+
 //    public final static String pluginClassName="jobName";
 //    public final static String pluginJarPath="jobName";
 //    public final static String jobToken="jobName";

@@ -1,9 +1,11 @@
 package org.thingsboard.server.service.ids;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thingsboard.server.controller.idscontroller.ConstantConfValue;
 
 import java.util.*;
 
@@ -209,5 +211,54 @@ public class QuartzManager {
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 得到某个Job
+     * @return
+     * @throws SchedulerException
+     */
+    public JobDetail getJobByKey(String name,String group) throws SchedulerException {
+        JobDetail det = scheduler.getJobDetail(new JobKey(name,group));
+
+        return det;
+    }
+
+    public  List<Map<String,Object>> getCurrentExecutingTaskIds()  {
+
+        try {
+            JobDetail det = scheduler.getJobDetail(new JobKey("",""));
+
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+
+        List<Map<String,Object>> jobList=null;
+        try {
+            List<JobExecutionContext> executingJobs = scheduler.getCurrentlyExecutingJobs();
+            jobList = new ArrayList<Map<String,Object>>(executingJobs.size());
+            for (JobExecutionContext executingJob : executingJobs) {
+                Map<String,Object> map=new HashMap<String, Object>();
+                JobDetail jobDetail = executingJob.getJobDetail();
+                JobKey jobKey = jobDetail.getKey();
+                Trigger trigger = executingJob.getTrigger();
+                map.put("jobName",jobKey.getName());
+                map.put("jobGroupName",jobKey.getGroup());
+                map.put("description","触发器:" + trigger.getKey());
+                Trigger.TriggerState triggerState = scheduler.getTriggerState(trigger.getKey());
+                map.put("jobStatus",triggerState.name());
+                if (trigger instanceof CronTrigger) {
+                    CronTrigger cronTrigger = (CronTrigger) trigger;
+                    String cronExpression = cronTrigger.getCronExpression();
+                    map.put("jobTime",cronExpression);
+                }
+                JobDataMap jobDataMap = executingJob.getJobDetail().getJobDataMap();
+
+                jobList.add(map);
+            }
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+        return jobList;
     }
 }

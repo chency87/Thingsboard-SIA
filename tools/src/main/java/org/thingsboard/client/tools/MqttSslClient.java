@@ -36,30 +36,33 @@ import java.security.KeyStore;
 public class MqttSslClient {
 
 
-    private static final String MQTT_URL = "ssl://localhost:1883";
+    private static final String MQTT_URL = "ssl://47.95.0.202:1883";
 
     private static final String CLIENT_ID = "MQTT_SSL_JAVA_CLIENT";
-    private static final String KEY_STORE_FILE = "mqttclient.jks";
+    private static final String KEY_STORE_FILE = "E:\\WorkSpace\\Thingsboard-SIA\\tools\\src\\main\\java\\org\\thingsboard\\client\\tools\\mqttclient.jks";
     private static final String JKS="JKS";
     private static final String TLS="TLS";
+    private static final String CLIENT_KEYSTORE_PASSWORD = "password";
+    private static final String CLIENT_KEY_PASSWORD = "password";
 
     public static void main(String[] args) {
 
         try {
-            URL ksUrl = Resources.getResource(KEY_STORE_FILE);
-            File ksFile = new File(ksUrl.toURI());
-            URL tsUrl = Resources.getResource(KEY_STORE_FILE);
-            File tsFile = new File(tsUrl.toURI());
-
+//            URL ksUrl = Resources.getResource(KEY_STORE_FILE);
+//            File ksFile = new File(ksUrl.toURI());
+            File ksFile = new File(KEY_STORE_FILE);
+//            URL tsUrl = Resources.getResource(KEY_STORE_FILE);
+//            File tsFile = new File(tsUrl.toURI());
+            File tsFile = new File(KEY_STORE_FILE);
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 
             KeyStore trustStore = KeyStore.getInstance(JKS);
             char[] ksPwd = new char[]{0x63, 0x6C, 0x69, 0x65, 0x6E, 0x74, 0x5F, 0x6B, 0x73, 0x5F, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6F, 0x72, 0x64};
-            trustStore.load(new FileInputStream(tsFile), ksPwd);
+            trustStore.load(new FileInputStream(tsFile), CLIENT_KEYSTORE_PASSWORD.toCharArray());
             tmf.init(trustStore);
             KeyStore ks = KeyStore.getInstance(JKS);
 
-            ks.load(new FileInputStream(ksFile), ksPwd);
+            ks.load(new FileInputStream(ksFile), CLIENT_KEY_PASSWORD.toCharArray());
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             char[] clientPwd = new char[]{0x63, 0x6C, 0x69, 0x65, 0x6E, 0x74, 0x5F, 0x6B, 0x65, 0x79, 0x5F, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6F, 0x72, 0x64};
             kmf.init(ks, clientPwd);

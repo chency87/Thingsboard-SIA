@@ -301,6 +301,11 @@
             <groupId>com.github.ua-parser</groupId>
             <artifactId>uap-java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>5.1.4</version>
+        </dependency>
     </dependencies>
 
     <build>

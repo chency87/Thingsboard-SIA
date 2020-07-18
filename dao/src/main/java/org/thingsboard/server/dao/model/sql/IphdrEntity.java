@@ -24,40 +24,40 @@ public class IphdrEntity {
     private Integer sid;
 
     @Column(name = "ip_src")
-    private long ipSrc;
+    private Long ipSrc;
 
     @Column(name = "ip_dst")
-    private long ipDst;
+    private Long ipDst;
 
     @Column(name = "ip_ver")
-    private int ipVer;
+    private Integer ipVer;
 
     @Column(name = "ip_hlen")
-    private int ipHlen;
+    private Integer ipHlen;
 
     @Column(name = "ip_tos")
-    private int ipTos;
+    private Integer ipTos;
 
     @Column(name = "ip_len")
-    private int ipLen;
+    private Integer ipLen;
 
     @Column(name = "ip_id")
-    private int ipId;
+    private Integer ipId;
 
     @Column(name = "ip_flags")
-    private int ipFlags;
+    private Integer ipFlags;
 
     @Column(name = "ip_off")
-    private int ipOff;
+    private Integer ipOff;
 
     @Column(name = "ip_ttl")
-    private int ipTtl;
+    private Integer ipTtl;
 
     @Column(name = "ip_proto")
-    private int ipProto;
+    private Integer ipProto;
 
     @Column(name = "ip_csum")
-    private int ipCsum;
+    private Integer ipCsum;
 
 
 }

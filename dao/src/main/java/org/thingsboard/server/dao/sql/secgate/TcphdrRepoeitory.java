@@ -12,4 +12,5 @@ public interface TcphdrRepoeitory extends JpaRepository<TcphdrEntity, Integer> {
    @Query(value ="select new org.thingsboard.server.dao.sql.secgate.CountTcpPort(count(e.tcpDport),e.tcpDport) from TcphdrEntity as e GROUP BY e.tcpDport ORDER BY e.tcpDport DESC")
     List<CountTcpPort> getTcpPort();
 
+//    List<TcphdrEntity> findAllById();
 }

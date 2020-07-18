@@ -25,6 +25,6 @@ public class EventsEntity implements Serializable {
     @Column(name="sid")
     private Integer sid;
 
-    private int signature;
+    private Integer signature;
     private Date timestamp;
 }

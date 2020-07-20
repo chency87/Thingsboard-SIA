@@ -23,7 +23,7 @@ public class WebConfig {
 
     @RequestMapping(value = "/{path:^(?!api$)(?!static$)(?!webjars$)[^\\.]*}/**")
     public String redirect() {
-        return "forward:/index.html";
+        return "forward:/index2.html";
     }
 
 }

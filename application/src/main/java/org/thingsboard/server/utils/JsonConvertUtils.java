@@ -20,11 +20,12 @@ public class JsonConvertUtils {
         String four = "{\"id\":{\"entityType\":\"DEVICE\",\"id\":\"85cacf50-bb6a-11ea-8cc4-73c0690c1ed2\"},\"keys\":[{\"key\":\"v1\",\"scope\":\"(*,*)\"},{\"key\":\"v2\",\"scope\":\"(*,*)\"}]}";
         String five = "{\"id\":{\"entityType\":\"DEVICE\",\"id\":\"85cacf50-bb6a-11ea-8cc4-73c0690c1ed2\"},\"keys\":[{}]}";
         Map<String,Map<String,String>> re = parseTransportParams(first);
-        updateTransportationParamsMap("tenantId",first);
+//        updateTransportationParamsMap("tenantId",first);
         updateTransportationParamsMap("tenantId",four);
         System.out.println(DataTransportController.transportationParamsMap);
 //        updateTransportationParamsMap("tenantId",five);
         releaseTransportationParamsMap("tenantId",four);
+//        releaseTransportationParamsMap("tenantId",first);
         System.out.println(DataTransportController.transportationParamsMap);
     }
 
@@ -41,7 +42,17 @@ public class JsonConvertUtils {
                 }
             }
         }
-        DataTransportController.transportationParamsMap.put(tenantId,currentMap);
+        Iterator<Map.Entry<String,Map<String,String>>> it = currentMap.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<String,Map<String,String>> entry = it.next();
+            if(entry.getValue().isEmpty()){
+                it.remove();//使用迭代器的remove()方法删除元素
+            }
+        }
+        if(currentMap.isEmpty()){
+            DataTransportController.transportationParamsMap.remove(tenantId);
+        }
+//
     }
 
     public static void updateTransportationParamsMap(String tenantId, String json){

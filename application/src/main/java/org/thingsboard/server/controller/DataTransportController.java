@@ -64,6 +64,10 @@ public class DataTransportController extends BaseController {
     public void stopTransportParams(@RequestBody String json) throws ThingsboardException, SchedulerException {
         SecurityUser user = getCurrentUser();
         JsonConvertUtils.releaseTransportationParamsMap(user.getTenantId().toString(),json);
+        if(DataTransportController.transportationParamsMap.size() == 0){
+            String jobGroupName = user.getTenantId()+ ConstantConfValue.dataTransportJobGroupNameSuffix;
+            quartzManager.deleteJob(ConstantConfValue.dataTransportJobName,jobGroupName);
+        }
     }
 
 
@@ -94,18 +98,22 @@ public class DataTransportController extends BaseController {
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/plugin/data/all", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String,String>> getAllData(@RequestParam(value = "limits", required = false, defaultValue = "20") Integer limit,
+    public Map<String,List<Map<String,String>>> getAllData(@RequestParam(value = "limits", required = false, defaultValue = "20") Integer limit,
                                                      @RequestParam(required = false) String idOffset) throws ThingsboardException {
         List<Map<String,String>> devList = new ArrayList<>();
-        int total = 0;
         Map<String,List<Map<String,String>>> retMap = new HashMap<>();
+        String lastId = "";
+        Boolean hasNext = false;
+
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
             TextPageLink pageLink = createPageLink(limit, null, idOffset, null);
-            List<Device> list = deviceService.findDevicesByTenantId(tenantId, pageLink).getData();
+            TextPageData<Device> pageData =  deviceService.findDevicesByTenantId(tenantId, pageLink);
+            hasNext = pageData.hasNext();
+            List<Device> list =pageData.getData();
             for (Device dev: list) {
                 List<TsKvEntry> tsKvEntryList = tsService.findAllLatest(tenantId, dev.getId()).get();
-                total += tsKvEntryList.size();
+                lastId = dev.getId().toString();
                 if(tsKvEntryList.size() > 0){
                     for (TsKvEntry entry:tsKvEntryList){
                         Map<String,String> ret = new HashMap<>();
@@ -114,6 +122,7 @@ public class DataTransportController extends BaseController {
                         ret.put("scope","(*,*)");
                         ret.put("key",entry.getKey());
                         ret.put("LastValue",entry.getValue().toString());
+                        ret.put("ts",String.valueOf(entry.getTs()));
                         ret.put("status",String.valueOf(existInRunningTransport(tenantId.toString(),dev.getId().toString(),entry.getKey())));
                         devList.add(ret);
                     }
@@ -128,7 +137,16 @@ public class DataTransportController extends BaseController {
         } catch (Exception e) {
             throw handleException(e);
         }
-        return devList;
+
+        List<Map<String,String>> pageLink = new ArrayList<>();
+        Map<String,String> pageInfo = new HashMap<>();
+        pageInfo.put("idOffset",lastId);
+        pageInfo.put("preIdOffset",idOffset);
+        pageInfo.put("hasNext",hasNext.toString());
+        pageLink.add(pageInfo);
+        retMap.put("data",devList);
+        retMap.put("page",pageLink);
+        return retMap;
     }
 
     private DeferredResult<ResponseEntity> getImmediateDeferredResult(String message, HttpStatus status) {

@@ -528,36 +528,36 @@
 <!--                    </execution>-->
 <!--                </executions>-->
 <!--            </plugin>-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>**/logback.xml</exclude>
-                    </excludes>
-                    <archive>
-                        <manifestEntries>
-                            <Implementation-Title>ThingsBoard</Implementation-Title>
-                            <Implementation-Version>${project.version}</Implementation-Version>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-jar-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<excludes>-->
+                        <!--<exclude>**/logback.xml</exclude>-->
+                    <!--</excludes>-->
+                    <!--<archive>-->
+                        <!--<manifestEntries>-->
+                            <!--<Implementation-Title>ThingsBoard</Implementation-Title>-->
+                            <!--<Implementation-Version>${project.version}</Implementation-Version>-->
+                        <!--</manifestEntries>-->
+                    <!--</archive>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>org.thingsboard.server.ThingsboardServerApplication</mainClass>
-                    <classifier>boot</classifier>
+                    <!--<classifier>boot</classifier>-->
                     <layout>ZIP</layout>
                     <executable>true</executable>
-                    <excludeDevtools>true</excludeDevtools>
-                    <embeddedLaunchScriptProperties>
-                        <confFolder>${pkg.installFolder}/conf</confFolder>
-                        <logFolder>${pkg.unixLogFolder}</logFolder>
-                        <logFilename>${pkg.name}.out</logFilename>
-                        <initInfoProvides>${pkg.name}</initInfoProvides>
-                    </embeddedLaunchScriptProperties>
+                    <!--<excludeDevtools>true</excludeDevtools>-->
+                    <!--<embeddedLaunchScriptProperties>-->
+                        <!--<confFolder>${pkg.installFolder}/conf</confFolder>-->
+                        <!--<logFolder>${pkg.unixLogFolder}</logFolder>-->
+                        <!--<logFilename>${pkg.name}.out</logFilename>-->
+                        <!--<initInfoProvides>${pkg.name}</initInfoProvides>-->
+                    <!--</embeddedLaunchScriptProperties>-->
                 </configuration>
                 <executions>
                     <execution>
@@ -567,65 +567,65 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.fortasoft</groupId>
-                <artifactId>gradle-maven-plugin</artifactId>
-                <configuration>
-                    <tasks>
-                        <task>build</task>
-<!--                        <task>buildDeb</task>-->
-<!--                        <task>buildRpm</task>-->
-                    </tasks>
-                    <args>
-                        <arg>-PprojectBuildDir=${project.build.directory}</arg>
-                        <arg>-PprojectVersion=${project.version}</arg>
-                        <arg>-PmainJar=${project.build.directory}/${project.build.finalName}-boot.${project.packaging}
-                        </arg>
-                        <arg>-PpkgName=${pkg.name}</arg>
-                        <arg>-PpkgInstallFolder=${pkg.installFolder}</arg>
-                        <arg>-PpkgLogFolder=${pkg.unixLogFolder}</arg>
-                    </args>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>invoke</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-assembly-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <finalName>${pkg.name}</finalName>-->
-<!--                    <descriptors>-->
-<!--                        <descriptor>src/main/assembly/windows.xml</descriptor>-->
-<!--                    </descriptors>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>assembly</id>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>single</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-install-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <file>${project.build.directory}/${pkg.name}.deb</file>-->
-<!--                    <artifactId>${project.artifactId}</artifactId>-->
-<!--                    <groupId>${project.groupId}</groupId>-->
-<!--                    <version>${project.version}</version>-->
-<!--                    <classifier>deb</classifier>-->
-<!--                    <packaging>deb</packaging>-->
-<!--                </configuration>-->
-<!--                <executions>-->
+            <!--<plugin>-->
+                <!--<groupId>org.fortasoft</groupId>-->
+                <!--<artifactId>gradle-maven-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<tasks>-->
+                        <!--<task>build</task>-->
+<!--&lt;!&ndash;                        <task>buildDeb</task>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <task>buildRpm</task>&ndash;&gt;-->
+                    <!--</tasks>-->
+                    <!--<args>-->
+                        <!--<arg>-PprojectBuildDir=${project.build.directory}</arg>-->
+                        <!--<arg>-PprojectVersion=${project.version}</arg>-->
+                        <!--<arg>-PmainJar=${project.build.directory}/${project.build.finalName}-boot.${project.packaging}-->
+                        <!--</arg>-->
+                        <!--<arg>-PpkgName=${pkg.name}</arg>-->
+                        <!--<arg>-PpkgInstallFolder=${pkg.installFolder}</arg>-->
+                        <!--<arg>-PpkgLogFolder=${pkg.unixLogFolder}</arg>-->
+                    <!--</args>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>invoke</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-assembly-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<finalName>${pkg.name}</finalName>-->
+                    <!--<descriptors>-->
+                        <!--<descriptor>src/main/assembly/windows.xml</descriptor>-->
+                    <!--</descriptors>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>assembly</id>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>single</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-install-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<file>${project.build.directory}/${pkg.name}.deb</file>-->
+                    <!--<artifactId>${project.artifactId}</artifactId>-->
+                    <!--<groupId>${project.groupId}</groupId>-->
+                    <!--<version>${project.version}</version>-->
+                    <!--<classifier>deb</classifier>-->
+                    <!--<packaging>deb</packaging>-->
+                <!--</configuration>-->
+                <!--<executions>-->
 <!--&lt;!&ndash;                    <execution>&ndash;&gt;-->
 <!--&lt;!&ndash;                        <id>install-deb</id>&ndash;&gt;-->
 <!--&lt;!&ndash;                        <phase>package</phase>&ndash;&gt;-->
@@ -633,8 +633,8 @@
 <!--&lt;!&ndash;                            <goal>install-file</goal>&ndash;&gt;-->
 <!--&lt;!&ndash;                        </goals>&ndash;&gt;-->
 <!--&lt;!&ndash;                    </execution>&ndash;&gt;-->
-<!--                </executions>-->
-<!--            </plugin>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>

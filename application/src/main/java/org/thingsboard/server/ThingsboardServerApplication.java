@@ -36,7 +36,6 @@ import java.util.Arrays;
 @EnableAsync
 @EnableSwagger2
 @EnableScheduling
-
 @ComponentScan({"org.thingsboard.server"})
 public class ThingsboardServerApplication {
 

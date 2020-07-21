@@ -17,8 +17,10 @@ package org.thingsboard.server.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.thingsboard.server.service.security.model.token.JwtToken;
 
+@Component
 @Configuration
 @ConfigurationProperties(prefix = "security.jwt")
 public class JwtSettings {

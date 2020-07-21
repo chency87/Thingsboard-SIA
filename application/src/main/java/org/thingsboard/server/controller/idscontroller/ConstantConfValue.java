@@ -7,14 +7,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class ConstantConfValue {
-    public final static String xmlPluginFolder="\\static\\proto\\plugin.xml";
+    public final static String xmlPluginFolder="/static/proto";
     public final static String dataFetchJobGroupNameSuffix="DATAFETCH";
 
     public final static String dataFetchJobDataParamClassName="className";
     public final static String dataFetchJobDataParamJarPath="jarPath";
     public final static String dataFetchJobDataParamToken="token";
 
-    public final static String protoHandlePluginUpload = "\\static\\proto";
 
 
     public final static String dataFetchPluginName="pluginName";

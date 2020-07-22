@@ -55,7 +55,7 @@ public class ProtoHandlePluginController  extends BaseController {
     public DeferredResult<ResponseEntity> uploadFileAndData(@RequestParam(value = "plugin") MultipartFile file, @RequestParam(value = "name") String name,
                                      @RequestParam(value = "classname") String className,@RequestParam(value = "status",defaultValue = "true") boolean status,
                                      @RequestParam(value = "requires") String requires) throws FileNotFoundException {
-        File folder = new File(System.getProperty("user.dir"), ConstantConfValue.protoHandlePluginUpload);
+        File folder = new File(System.getProperty("user.dir"), ConstantConfValue.xmlPluginFolder);
         if(dfp.hasPlugin(name))
         {
             return getImmediateDeferredResult("There is already an plugin named :" + name,HttpStatus.OK);

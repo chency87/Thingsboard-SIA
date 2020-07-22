@@ -9,6 +9,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.thingsboard.server.common.transport.TransportContext;
 import org.thingsboard.server.common.transport.TransportService;
@@ -34,6 +35,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 @Slf4j
+@Service
 public class BaseDataFetchJob implements BaseJob {
     @Autowired
     private HttpTransportContext transportContext;

@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api")
-public class DeviceDataFetchJobController  extends BaseController {
+public class DeviceDataFetchJobController extends BaseController {
 
     @Autowired
     private QuartzManager quartzManager;

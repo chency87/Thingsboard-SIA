@@ -15,5 +15,7 @@ public interface EventsRepository extends JpaRepository<EventsEntity, Integer>  
 //	List<Object[]> listBypubDateWithEnts(String pubDate, long news_id);
 	@Query(value = "SELECT COUNT(DISTINCT(cid)) FROM event WHERE timestamp >= to_timestamp(?1,'yyyy-MM-dd hh24:mi:ss') AND timestamp < to_timestamp(?2,'yyyy-MM-dd hh24:mi:ss') ", nativeQuery = true)
 	int getCountsBytime(String startTime, String endTime);
+//	public List<EventsEntity> findAll(int page,int size);
+
 }
 

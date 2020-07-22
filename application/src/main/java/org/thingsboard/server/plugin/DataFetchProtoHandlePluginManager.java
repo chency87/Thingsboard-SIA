@@ -38,10 +38,14 @@ public class DataFetchProtoHandlePluginManager {
     public DataFetchProtoHandlePluginManager() {
 
         this.xmlPluginFolder = System.getProperty("user.dir")+ ConstantConfValue.xmlPluginFolder;
-        File file = new File(xmlPluginFolder);
+        this.xmlPluginFolder.replaceAll("//","/");
+        File file = new File(this.xmlPluginFolder);
+//        System.out.println(this.xmlPluginFolder + "/plugin.xml");
+//        System.out.println("-***-*-******************");
         if(!file.exists())
         {
-            File f = new File(System.getProperty("user.dir")+ ConstantConfValue.xmlPluginFolder.substring(0,ConstantConfValue.xmlPluginFolder.lastIndexOf("\\")));
+//            File f = new File(System.getProperty("user.dir")+ ConstantConfValue.xmlPluginFolder.substring(0,ConstantConfValue.xmlPluginFolder.lastIndexOf("/")));
+            File f = new File(this.xmlPluginFolder);
             f.mkdirs();
             Document doc = DocumentHelper.createDocument();
             doc.addElement("plugins");
@@ -61,7 +65,7 @@ public class DataFetchProtoHandlePluginManager {
     //TODO: 读取插件配置文件plugin.xml中的内容
     public List<DataFetchPlugin> updatePluginList() throws DocumentException, MalformedURLException {
         pluginList.clear();
-        Document document = saxReader.read(new File(this.xmlPluginFolder));
+        Document document = saxReader.read(new File(this.xmlPluginFolder + "/plugin.xml"));
         //获取根目录
         Element root = document.getRootElement();
         List<?> plugins = root.elements("plugin");
@@ -188,7 +192,7 @@ public class DataFetchProtoHandlePluginManager {
 
         try {
 //            out = new FileOutputStream(this.xmlPluginFolder);
-           out = new FileOutputStream(System.getProperty("user.dir") + ConstantConfValue.protoHandlePluginUpload + "\\plugin.xml");
+           out = new FileOutputStream(System.getProperty("user.dir") + ConstantConfValue.xmlPluginFolder + "/plugin.xml");
             OutputFormat format= OutputFormat.createPrettyPrint();   //漂亮格式：有空格换行
             format.setEncoding("UTF-8");
             //1.创建写出对象

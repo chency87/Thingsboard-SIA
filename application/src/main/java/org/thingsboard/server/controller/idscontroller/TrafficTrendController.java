@@ -10,18 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.thingsboard.server.bean.DisplayCard;
-import org.thingsboard.server.service.ids.AcideventService;
-import org.thingsboard.server.service.ids.DashboardService;
+import org.thingsboard.server.service.ids.TrafficTrendService;
 
 @RestController
 @RequestMapping("/api")
-public class DashboardsController {
+public class TrafficTrendController {
 	
 	@Autowired
-	private DashboardService dashBoard;
+	private TrafficTrendService trafficTrendService;
 //
 //	@Autowired
 //	private AcideventService iacids;
@@ -44,14 +40,14 @@ public class DashboardsController {
 	 * @return Map<x(y)轴，List<值>>
 	 */
 	@PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
-	@RequestMapping(value = "/dashboard/networktraffictend",method= RequestMethod.GET)
+	@RequestMapping(value = "/trafficTrend/networktraffictend",method= RequestMethod.GET)
 //	@ApiOperation(value = "", notes = "以HashMap形式返回对应x,y值查询对应的值，x为时间，y为流量值，默认计算当前时间前的7个小时")
 //	@ApiImplicitParams({@ApiImplicitParam(paramType="String", name = "start", value = "流量趋势计算开始时间", required = true, dataType = "String"), @ApiImplicitParam(paramType="String", name = "end", value = "流量趋势计算结束时间", required = true, dataType = "String")})
 	public Map<String,List<String>> networkTrafficTend(
 			@RequestParam(name = "start") String start,
 			@RequestParam(name = "end") String end){
 		
-		return dashBoard.networkTrafficTend(start, end);
+		return trafficTrendService.networkTrafficTend(start, end);
 	}
 	
 	/**
@@ -59,11 +55,11 @@ public class DashboardsController {
 	 * @return
 	 */
 	@PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
-	@RequestMapping(value = "/dashboard/networkabnormalcountinfo",method= RequestMethod.GET)
+	@RequestMapping(value = "/trafficTrend/networkabnormalcountinfo",method= RequestMethod.GET)
 //	@ApiOperation(value = "获取DashBoard上方异常行为周报信息", notes = "以HashMap形式返回对应x,y值查询对应的值，x为时间，y为异常数量")
 	public Map<String,List<String>> networkAbnormalCountInfo(){
 		
-		return dashBoard.networkAbnormalCountInfo();
+		return trafficTrendService.networkAbnormalCountInfo();
 	}
 	
 

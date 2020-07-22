@@ -9,7 +9,7 @@ import org.thingsboard.server.dao.model.sql.DoubleKeys;
 import java.util.List;
 import java.util.Map;
 
-public interface DashboardsRepository extends JpaRepository<Dashboard1, DoubleKeys>, JpaSpecificationExecutor<Dashboard1> {
+public interface TrafficTrendRepository extends JpaRepository<Dashboard1, DoubleKeys>, JpaSpecificationExecutor<Dashboard1> {
     @Query(nativeQuery = true, value = "SELECT SUM(LENGTH(a.data_payload))\r\n" +
             "FROM DATA a LEFT JOIN EVENT b \r\n" +
             "ON a.sid = b.sid AND a.cid = b.cid\r\n" +

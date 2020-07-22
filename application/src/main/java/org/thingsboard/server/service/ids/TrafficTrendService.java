@@ -12,17 +12,17 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.log4j.Log4j2;
 
-import org.thingsboard.server.dao.sql.secgate.DashboardsRepository;
+import org.thingsboard.server.dao.sql.secgate.TrafficTrendRepository;
 import org.thingsboard.server.dao.sql.secgate.EventsRepository;
 import org.thingsboard.server.dao.sql.secgate.IphdrRepository;
 import org.thingsboard.server.utils.CalculationIntervalUtils;
 
 @Log4j2
 @Service
-public class DashboardService{
+public class TrafficTrendService {
 	
 	@Autowired
-	private DashboardsRepository dashBoardDao;
+	private TrafficTrendRepository trafficTrendDao;
 	@Autowired
 	private EventsRepository eventDao;
 	
@@ -56,7 +56,7 @@ public class DashboardService{
 			intervalStart = xAxis.get(i); 
 			intervalEnd = xAxis.get(i+1); 
 			
-			Long dataSum = dashBoardDao.getIntervalDataSum(intervalStart, intervalEnd);
+			Long dataSum = trafficTrendDao.getIntervalDataSum(intervalStart, intervalEnd);
 			if (dataSum!=null){
 				Double dataMb = dataSum/(double)unitConversion;
 				data.add(dataMb.toString());
@@ -66,7 +66,7 @@ public class DashboardService{
 			}
 
 		}
-		Long dataSum = dashBoardDao.getIntervalDataSum(intervalStart, intervalEnd);
+		Long dataSum = trafficTrendDao.getIntervalDataSum(intervalStart, intervalEnd);
 //		cchong
 		if (dataSum!=null){
 			Double dataMb = dataSum/(double)unitConversion;
@@ -146,7 +146,7 @@ public class DashboardService{
 //		List<IDeviceStatistic> src1 = dashBoardDao.getSRC();
 //		List<IDeviceStatistic> src1 = dashBoardDao.getSRC1();
 //		log.info("***********&&&&&&&&" + src1);
-		Object src12 = dashBoardDao.getSRC12();
+		Object src12 = trafficTrendDao.getSRC12();
 		log.info(src12.toString());
 		
 //		log.info("***********&&&&&&&&" + src1);

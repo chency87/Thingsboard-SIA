@@ -29,4 +29,8 @@ public interface AcideventRepository extends JpaRepository<AcideventEntity, Inte
             "LEFT JOIN thingsboard.udphdr e ON e.sid = b.sid AND e.cid = b.cid ", nativeQuery = true)
 
     List<Object> Acideventlist();
+
+
+    @Query(value ="select new org.thingsboard.server.dao.sql.secgate.CountTcpPort(count(e.tcpDport),e.tcpDport) from TcphdrEntity as e GROUP BY e.tcpDport ORDER BY e.tcpDport DESC")
+    List<CountTcpPort> getTcpPort();
 }

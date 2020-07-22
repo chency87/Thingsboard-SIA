@@ -67,6 +67,10 @@ public class BaseDataTransportJob implements BaseJob{
                 e.printStackTrace();
             }
         }
+        //
+
+        //
+        //
         System.out.println(arrayLastValue);
     }
 

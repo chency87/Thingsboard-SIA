@@ -39,6 +39,10 @@ public class DeviceDataFetchJobController  extends BaseController {
     private DataFetchProtoHandlePluginManager dfp;
 
 
+    /**
+     *  启动所有注册设备
+     * @throws ThingsboardException
+     */
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value="/exec/all", method = RequestMethod.POST)
     public void startAllQuartzJob() throws ThingsboardException {
@@ -52,12 +56,31 @@ public class DeviceDataFetchJobController  extends BaseController {
 //        }
     }
 
+    /**
+     *  暂停同一jobGroupName下的所有设备
+     * @throws ThingsboardException
+     */
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value="/stop/all", method = RequestMethod.POST)
-    public void stopAllQuartzJob() throws ThingsboardException {
-        quartzManager.stopAllJob("DEVICE"+getCurrentUser().getEmail()+ConstantConfValue.dataFetchJobGroupNameSuffix);
+    public DeferredResult<ResponseEntity> stopAllQuartzJob(@PathVariable("entityType") String entityType) throws ThingsboardException {
+
+        SecurityUser user = getCurrentUser();
+        String jobGroupName = entityType + user.getEmail()+ ConstantConfValue.dataFetchJobGroupNameSuffix;
+        quartzManager.stopAllJob(jobGroupName);
+        return getImmediateDeferredResult("Stop Data Fetch Right", HttpStatus.OK);
     }
 
+    /**
+     *  启动或停止设备
+     * @param entityType
+     * @param entityIdStr
+     * @param status            true/启动设备       false/停止
+     * @param cron              设备定时采集时间间隔
+     * @return
+     * @throws ThingsboardException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/plugin/exec", method = RequestMethod.POST, params = {"status","cron"})
     @ResponseBody
@@ -65,11 +88,13 @@ public class DeviceDataFetchJobController  extends BaseController {
                              @RequestParam(name = "status") Boolean status,
                              @RequestParam(name = "cron",defaultValue = "0/1 * * * * ?") String cron) throws ThingsboardException, ExecutionException, InterruptedException {
 
+
         String pluginName = null;
         SecurityUser user = getCurrentUser();
 
         List<String> keyList = toKeysList(ConstantConfValue.dataFetchPluginName);
         EntityId entity = EntityIdFactory.getByTypeAndId(entityType, entityIdStr);
+        String jobName =entity.toString();
 
         ListenableFuture<List<AttributeKvEntry>> listListenableFuture = attributesService.find(user.getTenantId(), entity, "CLIENT_SCOPE", keyList);
         List<AttributeKvEntry> attributeKvEntries = listListenableFuture.get();
@@ -94,7 +119,7 @@ public class DeviceDataFetchJobController  extends BaseController {
             DeviceId deviceId = new DeviceId(toUUID(entityIdStr));
             DeviceCredentials deviceCredentialsByDeviceId = deviceCredentialsService.findDeviceCredentialsByDeviceId(getCurrentUser().getTenantId(), deviceId);
             String token = deviceCredentialsByDeviceId.getCredentialsId();
-            String jobName =entity.toString();
+
             String jobGroupName = entityType + user.getEmail()+ ConstantConfValue.dataFetchJobGroupNameSuffix;
             jobData.put(ConstantConfValue.dataFetchJobDataParamClassName,plugin.getClassName());
             jobData.put(ConstantConfValue.dataFetchJobDataParamJarPath,plugin.getJar());
@@ -106,11 +131,11 @@ public class DeviceDataFetchJobController  extends BaseController {
                 }
                 quartzManager.addJob(BaseDataFetchJob.class,jobName,jobGroupName,cron,jobData);
             }else {
-                quartzManager.pauseJob(jobName,jobGroupName);
+                quartzManager.deleteJob(jobName,jobGroupName);
             }
             return getImmediateDeferredResult("SUCCESS", HttpStatus.OK);
         }else {
-            return getImmediateDeferredResult("Execute Data Fetch Error", HttpStatus.OK);
+            return getImmediateDeferredResult("Execute Data Fetch Error", HttpStatus.BAD_REQUEST);
         }
     }
 

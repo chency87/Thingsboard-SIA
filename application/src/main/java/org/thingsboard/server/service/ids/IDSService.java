@@ -4,21 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thingsboard.server.bean.IDSConsole;
 import org.thingsboard.server.bean.IPAndNum;
-import org.thingsboard.server.bean.Port;
-import org.thingsboard.server.bean.Signatures;
 import org.thingsboard.server.dao.CountSig;
-import org.thingsboard.server.dao.model.sql.EventSnortEntity;
-import org.thingsboard.server.dao.model.sql.IphdrEntity;
 import org.thingsboard.server.dao.model.sql.SensorEntity;
 import org.thingsboard.server.dao.model.sql.SignatureEntity;
-import org.thingsboard.server.dao.sql.event.EventRepository;
 import org.thingsboard.server.dao.sql.secgate.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -170,7 +163,7 @@ public class IDSService {
         return result.toString();
     }
 
-    //ip = 3232235778
+
     private String longToIp2(long ip) {
 
         return ((ip >> 24) & 0xFF) + "."

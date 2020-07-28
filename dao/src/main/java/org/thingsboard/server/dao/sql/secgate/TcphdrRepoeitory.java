@@ -13,4 +13,6 @@ public interface TcphdrRepoeitory extends JpaRepository<TcphdrEntity, Integer> {
     List<CountTcpPort> getTcpPort();
 
 //    List<TcphdrEntity> findAllById();
+@Query(value ="select u from TcphdrEntity as u where  u.cid=?1 and u.sid=?2")
+    List<TcphdrEntity> findAllByCidAndSid(int cid,int sid);
 }

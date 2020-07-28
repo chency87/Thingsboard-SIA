@@ -10,6 +10,9 @@ import java.util.List;
 
 public interface IphdrRepository extends JpaRepository<IphdrEntity, Integer> {
 
+    @Query(value ="select u from IphdrEntity as u where  u.cid=?1 and u.sid=?2")
+    List<IphdrEntity> findAllByCidAndSid(int cid,int sid);
+
     @Query(value = "SELECT COUNT(ip_proto)  FROM  IphdrEntity WHERE ipProto = :ipProto")
     Integer countByIpProto(@Param("ipProto") Integer ipProto);
 

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(value = DoubleKeys.class)
-public class Dashboard1 {
+public class TrafficPara {
 
 	
 	@Id

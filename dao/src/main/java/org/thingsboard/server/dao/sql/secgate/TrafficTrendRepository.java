@@ -3,13 +3,13 @@ package org.thingsboard.server.dao.sql.secgate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import org.thingsboard.server.dao.model.sql.Dashboard1;
+import org.thingsboard.server.dao.model.sql.TrafficPara;
 import org.thingsboard.server.dao.model.sql.DeviceStatistic;
 import org.thingsboard.server.dao.model.sql.DoubleKeys;
 import java.util.List;
 import java.util.Map;
 
-public interface TrafficTrendRepository extends JpaRepository<Dashboard1, DoubleKeys>, JpaSpecificationExecutor<Dashboard1> {
+public interface TrafficTrendRepository extends JpaRepository<TrafficPara, DoubleKeys>, JpaSpecificationExecutor<TrafficPara> {
     @Query(nativeQuery = true, value = "SELECT SUM(LENGTH(a.data_payload))\r\n" +
             "FROM DATA a LEFT JOIN EVENT b \r\n" +
             "ON a.sid = b.sid AND a.cid = b.cid\r\n" +

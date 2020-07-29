@@ -166,14 +166,12 @@ public class DataFetchProtoHandlePluginManager {
     public Boolean deleteProto(String name) throws MalformedURLException, DocumentException {
         Document doc=DocumentHelper.createDocument();
         Element plugins = doc.addElement("plugins");
-
             List<DataFetchPlugin> dataFetchPlugins = this.updatePluginList();
             if (dataFetchPlugins != null){
                 for (DataFetchPlugin dataFetchPlugin:dataFetchPlugins){
-                    if (dataFetchPlugin.getName().equals(name)){
-                        dataFetchPlugins.remove(dataFetchPlugin);
+                    if (!dataFetchPlugin.getName().equals(name)){
+                        addElement(plugins, dataFetchPlugin);
                     }
-                    addElement(plugins, dataFetchPlugin);
                 }
             }
            return write2Xml(doc);

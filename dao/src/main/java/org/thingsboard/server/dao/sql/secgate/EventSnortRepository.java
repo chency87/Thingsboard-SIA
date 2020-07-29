@@ -1,5 +1,7 @@
 package org.thingsboard.server.dao.sql.secgate;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +17,9 @@ public interface EventSnortRepository extends JpaRepository<EventSnortEntity, In
 
 /*    @Query("select count(event.signature) as num,sid,signature from event where sid = :sid GROUP BY signature,sid ORDER BY num DESC")
     List<Object> findBySidAndSignature(@Param("sid") Integer sid);*/
+//    @Query(value = "select sd from EventSnortEntity as sd ORDER BY ?#{#pageable}",countQuery = "select count(e) from EventSnortEntity as e",nativeQuery = true)
+//    Page<EventSnortEntity> findtt(Pageable pageable);
+    Page<EventSnortEntity> findAll(Pageable pageable);
 
     @Query(value = "select count(event.signature) as num from event where sid = ?1 GROUP BY signature ", nativeQuery = true)
     List<Object> getSigntureCount(Integer sid);

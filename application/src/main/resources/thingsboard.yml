@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 server:
   # Server bind address
   address: "${HTTP_BIND_ADDRESS:0.0.0.0}"
@@ -325,7 +324,7 @@ spring:
     database-platform: "${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}"
   datasource:
     driverClassName: "${SPRING_DRIVER_CLASS_NAME:org.postgresql.Driver}"
-    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://192.168.8.172:5432/thingsboard}"
+    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/thingsboard}"
     username: "${SPRING_DATASOURCE_USERNAME:postgres}"
     password: "${SPRING_DATASOURCE_PASSWORD:123456}"
     hikari:
@@ -506,4 +505,3 @@ swagger:
 #    title: "${SWAGGER_LICENSE_TITLE:Apache License Version 2.0}"
 #    url: "${SWAGGER_LICENSE_URL:https://github.com/thingsboard/thingsboard/blob/master/LICENSE}"
   version: "${SWAGGER_VERSION:2.0}"
-

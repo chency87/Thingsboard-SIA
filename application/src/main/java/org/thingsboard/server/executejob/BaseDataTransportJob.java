@@ -3,6 +3,10 @@ package org.thingsboard.server.executejob;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -14,19 +18,20 @@ import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.kv.*;
 import org.thingsboard.server.controller.DataTransportController;
 import org.thingsboard.server.controller.idscontroller.ConstantConfValue;
+import org.thingsboard.server.dao.model.sql.MqttEntity;
 import org.thingsboard.server.dao.timeseries.BaseTimeseriesService;
-import org.thingsboard.server.service.security.model.SecurityUser;
-import org.thingsboard.server.utils.JsonConvertUtils;
+import org.thingsboard.server.service.ids.MqttTransportService;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class BaseDataTransportJob implements BaseJob{
 
 
+    @Autowired
+    private MqttTransportService mqttTransportService;
 
     @Autowired
     private BaseTimeseriesService timeseriesService;
@@ -70,10 +75,9 @@ public class BaseDataTransportJob implements BaseJob{
             }
         }
         //
+        mqttTcpTransport(tenantId.toString(),arrayLastValue.getAsString());
 
-        //
-        //
-        System.out.println(arrayLastValue);
+//        System.out.println(arrayLastValue);
     }
 
     private JsonArray initLastValue(List<TsKvEntry> lastKvEntries , int span){
@@ -103,4 +107,31 @@ public class BaseDataTransportJob implements BaseJob{
         }
         return array;
     }
+
+    private void mqttTcpTransport(String tenantId,String payload){
+
+        List<MqttEntity> mqttEntities = mqttTransportService.configMqttGet(tenantId);
+        if (mqttEntities.size() == 0){
+            throw new RuntimeException("配置错误");
+        }
+        MqttEntity mqttEntity = mqttEntities.get(0);
+        try {
+            MqttConnectOptions options = new MqttConnectOptions();
+            options.setPassword(mqttEntity.getPassword().toCharArray());
+            options.setUserName(mqttEntity.getUsername());
+            MqttAsyncClient client = new MqttAsyncClient(mqttEntity.getAddress(), ConstantConfValue.CLIENT_ID);
+            client.connect(options);
+//            Thread.sleep(3000);
+            MqttMessage message = new MqttMessage();
+//            payload示例：{"key1":"value1", "key2":true, "key3": 3.0, "key4": 4}
+            message.setPayload(payload.getBytes());
+            client.publish(mqttEntity.getTopic(), message);
+            client.disconnect();
+            log.info("Disconnected");
+            System.exit(0);
+        } catch (Exception e) {
+            log.error("Unexpected exception occurred in MqttSslClient", e);
+        }
+    }
+
 }

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.thingsboard.server.bean.MqttConfig;
 import org.thingsboard.server.common.data.Device;
 import org.thingsboard.server.common.data.exception.ThingsboardException;
 import org.thingsboard.server.common.data.id.EntityId;
@@ -23,8 +24,10 @@ import org.thingsboard.server.common.data.page.TextPageData;
 import org.thingsboard.server.common.data.page.TextPageLink;
 import org.thingsboard.server.controller.BaseController;
 import org.thingsboard.server.controller.idscontroller.ConstantConfValue;
+import org.thingsboard.server.dao.model.sql.MqttEntity;
 import org.thingsboard.server.dao.timeseries.TimeseriesService;
 import org.thingsboard.server.executejob.BaseDataTransportJob;
+import org.thingsboard.server.service.ids.MqttTransportService;
 import org.thingsboard.server.service.ids.QuartzManager;
 import org.thingsboard.server.service.security.model.SecurityUser;
 import org.thingsboard.server.utils.JsonConvertUtils;
@@ -44,6 +47,9 @@ public class DataTransportController extends BaseController {
 
     @Autowired
     private QuartzManager quartzManager;
+
+    @Autowired
+    private MqttTransportService mqttTransportService;
 
 //    public final static ConcurrentHashMap<String,String> runningTransportationMap = new ConcurrentHashMap<>();
 
@@ -149,6 +155,37 @@ public class DataTransportController extends BaseController {
         return retMap;
     }
 
+
+    @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN')")
+    @RequestMapping(value = "/config/transport/save", method = RequestMethod.POST)
+    @ResponseBody
+    public DeferredResult<ResponseEntity> configMqttSave(MqttEntity mqttConfig) throws Exception {
+
+        boolean b = mqttTransportService.configMqttSave(mqttConfig);
+        if (b){
+            return getImmediateDeferredResult("SUCCESS", HttpStatus.OK);
+        }
+       return getImmediateDeferredResult("FAIL",HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN')")
+    @RequestMapping(value = "/config/transport/get", method = RequestMethod.GET)
+    @ResponseBody
+    public List<MqttEntity> configMqttGet() throws ThingsboardException {
+        SecurityUser user = getCurrentUser();
+        TenantId tenantId = user.getTenantId();
+        List<MqttEntity> mqttEntities = mqttTransportService.configMqttGet(tenantId.toString());
+        return mqttEntities;
+    }
+
+
+/*    private static final String MQTT_URL = "tcp://localhost:1883";
+
+    private static final String CLIENT_ID = "MQTT_TCP_JAVA_CLIENT";
+    private static final String USERNAME = "admin";
+    private static final String PASSWORD = "public";*/
+
+
     private DeferredResult<ResponseEntity> getImmediateDeferredResult(String message, HttpStatus status) {
         DeferredResult<ResponseEntity> result = new DeferredResult<>();
         result.setResult(new ResponseEntity<>(message, status));
@@ -176,6 +213,7 @@ public class DataTransportController extends BaseController {
         }
         return false;
     }
+
 }
 
 //        json =" [{\n" +

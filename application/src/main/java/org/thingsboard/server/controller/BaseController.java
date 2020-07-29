@@ -265,7 +265,7 @@ public abstract class BaseController {
     }
 
 
-    TextPageLink createPageLink(int limit, String textSearch, String idOffset, String textOffset) {
+    protected TextPageLink createPageLink(int limit, String textSearch, String idOffset, String textOffset) {
         UUID idOffsetUuid = null;
         if (StringUtils.isNotEmpty(idOffset)) {
             idOffsetUuid = toUUID(idOffset);

@@ -168,12 +168,10 @@ public class DataFetchProtoHandlePluginManager {
         Element plugins = doc.addElement("plugins");
 
             List<DataFetchPlugin> dataFetchPlugins = this.updatePluginList();
-            if (dataFetchPlugins == null){
+            if (dataFetchPlugins != null){
                 for (DataFetchPlugin dataFetchPlugin:dataFetchPlugins){
                     if (dataFetchPlugin.getName().equals(name)){
                         dataFetchPlugins.remove(dataFetchPlugin);
-                    }else {
-                        return false;
                     }
                     addElement(plugins, dataFetchPlugin);
                 }

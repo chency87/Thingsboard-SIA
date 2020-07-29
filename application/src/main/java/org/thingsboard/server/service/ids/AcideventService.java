@@ -2,6 +2,7 @@ package org.thingsboard.server.service.ids;
 
 //import com.github.pagehelper.PageHelper;
 //import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -104,7 +105,7 @@ public class AcideventService {
 //    }
 
     public PageInfo findAllAcideventbyPage(int page, int size) {
-        PageHelper.startPage(page,size);
+        Page<Object> objects = PageHelper.startPage(page, size);
         PageInfo<Acidevent> pageInfo = new PageInfo<>();
         List<Acidevent>  list = new ArrayList<>();
         List<EventsEntity> a = eventDao.findAll();

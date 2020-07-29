@@ -1,6 +1,9 @@
 package org.thingsboard.server.service.ids;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.thingsboard.server.bean.IDSConsole;
 import org.thingsboard.server.bean.IPAndNum;
@@ -8,10 +11,11 @@ import org.thingsboard.server.dao.CountSig;
 import org.thingsboard.server.dao.model.sql.SensorEntity;
 import org.thingsboard.server.dao.model.sql.SignatureEntity;
 import org.thingsboard.server.dao.sql.secgate.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -40,7 +44,7 @@ public class IDSService {
     SignatureRepository signatureRepository;
 
     //TODO：Alert Information
-    public List<IDSConsole> getAlertInformation() {
+    public List<IDSConsole> getAlertInformation() throws Exception{
         ArrayList<IDSConsole> idsConsoles = new ArrayList<>();
         int icmpSize = iphdrRepository.countByIpProto(1);
         int udpSize = iphdrRepository.countByIpProto(2);
@@ -54,7 +58,7 @@ public class IDSService {
     }
 
     //TODO:Sensors information
-    public List<IDSConsole> getSensors() {
+    public List<IDSConsole> getSensors() throws Exception{
         ArrayList<IDSConsole> idsConsoles = new ArrayList<>();
         IDSConsole idsConsole = new IDSConsole();
         List<SensorEntity> sensorEntities = sensorRepository.findAll();
@@ -72,7 +76,7 @@ public class IDSService {
      *  统计输入IP及其个数
      * @return
      */
-    public List<IPAndNum> getTopSources() {
+    public List<IPAndNum> getTopSources() throws Exception{
         ArrayList<IPAndNum> ipAndNums = new ArrayList<>();
         List<CountSrcIP> ipSrcAndCount = iphdrRepository.getIPSrcAndCount();
         Stream<CountSrcIP> limit = ipSrcAndCount.stream().limit(5);
@@ -84,7 +88,7 @@ public class IDSService {
      *  统计输出IP及其个数
      * @return
      */
-    public List<IPAndNum> getTopTargets() {
+    public List<IPAndNum> getTopTargets() throws Exception{
         ArrayList<IPAndNum> ipAndNums = new ArrayList<>();
         List<CountDstIP> ipDstAndCount = iphdrRepository.getIPDstAndCount();
         Stream<CountDstIP> limit = ipDstAndCount.stream().limit(5);
@@ -92,7 +96,7 @@ public class IDSService {
         return ipAndNums;
     }
 
-    public Map<String, Object> getTopTargetPort() {
+    public Map<String, Object> getTopTargetPort() throws Exception{
         Map<String, Object> map = new HashMap<>();
         List<CountUdpPort> udpPort = udphdrRepository.getUdpPort();
         Stream<CountUdpPort> udpPortStream = udpPort.stream().limit(5);
@@ -103,22 +107,31 @@ public class IDSService {
         return map;
     }
 
-    public List<SignatureEntity> getSignatures() {
+    public Page<SignatureEntity> getSignatures(int size,int page) throws Exception{
 
- /*       ArrayList<Signatures> idsConsoles = new ArrayList<>();
-        Signatures signatures1 = new Signatures(1, "WEB-MISC cross site scripting attempt [sid 1497]", 2, 355, 4, 4);
-        Signatures signatures2 = new Signatures(1, "P2P Fastrack kazaa/morpheus traffic [sid 1497]", 2, 355, 4, 4);
-        idsConsoles.add(signatures1);
-        idsConsoles.add(signatures2);*/
-        List<SignatureEntity> all = signatureRepository.findAll();
-
+        Pageable pageable = PageRequest.of(page, size);
+        Page<SignatureEntity> all = signatureRepository.findAll(pageable);
         return all;
+    }
+
+    //此功能未实现
+    public double getTrafficTrend() {
+
+/*        Timestamp t = new Timestamp(new Date().getTime());
+        String s = t.toString();
+
+        int num= eventSnortRepository.getTrafficTrend2(s);*/
+        double num = 0.56;
+
+        return num;
     }
 
     public List<CountSig> getSignatures2() {
 
       return eventSnortRepository.getSigntureCount2(1);
     }
+
+
 
     /**
      * IP 转为数字
@@ -171,4 +184,36 @@ public class IDSService {
                 + ((ip >> 8) & 0xFF) + "."
                 + (ip & 0xFF);
     }
+
+
+    /**
+     *method 将字符串类型的日期转换为一个timestamp（时间戳记java.sql.Timestamp）
+     dateString 需要转换为timestamp的字符串
+     dataTime timestamp
+     */
+    public final static java.sql.Timestamp string2Time(String dateString)
+            throws java.text.ParseException {
+        DateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss.SSS", Locale.ENGLISH);//设定格式
+        //dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale.ENGLISH);
+        dateFormat.setLenient(false);
+        java.util.Date timeDate = dateFormat.parse(dateString);//util类型
+        java.sql.Timestamp dateTime = new java.sql.Timestamp(timeDate.getTime());//Timestamp类型,timeDate.getTime()返回一个long型
+        return dateTime;
+    }
+    /**
+     *method 将字符串类型的日期转换为一个Date（java.sql.Date）
+     dateString 需要转换为Date的字符串
+     dataTime Date
+     */
+    public final static java.sql.Date string2Date(String dateString)
+            throws java.lang.Exception {
+        DateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        dateFormat.setLenient(false);
+        java.util.Date timeDate = dateFormat.parse(dateString);//util类型
+        java.sql.Date dateTime = new java.sql.Date(timeDate.getTime());//sql类型
+        return dateTime;
+    }
+
 }

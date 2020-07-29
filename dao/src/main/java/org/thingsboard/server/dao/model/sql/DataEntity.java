@@ -15,12 +15,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 @IdClass(value = DoubleKeys.class)
 public class DataEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
     @Id
     @Column(name="cid")
     private Integer cid;
     @Id
     @Column(name="sid")
     private Integer sid;
+    @Column(name = "data_payload")
     private String dataPayload;
 }

@@ -24,7 +24,7 @@ public class ConstantConfValue {
 
     public final static String dataTransportJobName = "DATATRANSPORT_JOB";
     public final static String dataTransportJobGroupNameSuffix = "DATATRANSPORT_JOB";
-
+    public final static String CLIENT_ID = "MQTT_TCP_JAVA_CLIENT";
 
 
 //    public final static String pluginClassName="jobName";

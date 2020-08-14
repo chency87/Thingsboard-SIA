@@ -128,17 +128,23 @@ public class ProtoHandlePluginController  extends BaseController {
     public Map<String,String> show( @PathVariable("entityType") String entityType, @PathVariable("entityId") String entityIdStr,
                                                      @RequestParam (name = "protocol") String protocol
                                                      ) throws ThingsboardException, ExecutionException, InterruptedException, MalformedURLException, DocumentException {
-        AtomicReference<List<String>> list = new AtomicReference();
+        List<String> list = new ArrayList<>();
         Map<String, String> map = new HashMap<>();
         SecurityUser user = getCurrentUser();
         List<String> keyList = toKeysList(ConstantConfValue.dataFetchPluginName);
         EntityId entity = EntityIdFactory.getByTypeAndId(entityType, entityIdStr);
         List<DataFetchPlugin> dataFetchPlugins = dfp.updatePluginList();
-        dataFetchPlugins.forEach(dataFetchPlugin -> {
+        for (DataFetchPlugin dataFetchPlugin : dataFetchPlugins){
+            if (dataFetchPlugin.getName().equals(protocol)) {
+                list = dataFetchPlugin.getRequires();
+                //list.set(dataFetchPlugin.getRequires());
+            }
+        }
+     /*   dataFetchPlugins.forEach(dataFetchPlugin -> {
             if (dataFetchPlugin.getName().equals(protocol)) {
                 list.set(dataFetchPlugin.getRequires());
-            }; });
-        list.get().forEach(s -> { map.put(s, null); });
+            }; });*/
+        list.forEach(s -> { map.put(s, null); });
         ListenableFuture<List<AttributeKvEntry>> listListenableFuture = attributesService.find(user.getTenantId(), entity, DataConstants.CLIENT_SCOPE, keyList);
         List<AttributeKvEntry> attributeKvEntries = listListenableFuture.get();
         attributeKvEntries.forEach(attributeKvEntry -> {

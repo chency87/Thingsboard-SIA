@@ -1,5 +1,6 @@
 package org.thingsboard.server.controller.idscontroller;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +29,7 @@ public class IDSController extends BaseController {
     @Autowired
     IDSService idsService;
 
+    @ApiOperation(value = "显示报警信息",notes = "方法名称与前端页面中标题对应，下同")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/ids/alertinformation", method = RequestMethod.GET)
     public List<IDSConsole> getAlertInformation() throws Exception {
@@ -67,6 +69,7 @@ public class IDSController extends BaseController {
     }
 
 
+    @ApiOperation(value = "显示设备近期流量数据总量",notes = "用于实时显示设备的数据量")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/ids/chart/trafficTrend",method = RequestMethod.GET)
     public double trafficTrend() throws Exception {

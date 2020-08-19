@@ -1,6 +1,7 @@
 package org.thingsboard.server.controller.idscontroller;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,7 @@ public class DeviceDataFetchJobController extends BaseController {
      *  启动所有注册设备
      * @throws ThingsboardException
      */
+    @ApiOperation(value = "启动所有注册设备",notes = "启动所有配置好的设备")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value="/exec/all", method = RequestMethod.POST)
     public void startAllQuartzJob() throws ThingsboardException {
@@ -60,6 +62,7 @@ public class DeviceDataFetchJobController extends BaseController {
      *  暂停同一jobGroupName下的所有设备
      * @throws ThingsboardException
      */
+    @ApiOperation(value = "停止所有设备",notes = "停止所有配置好的设备")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value="/stop/all", method = RequestMethod.POST)
     public DeferredResult<ResponseEntity> stopAllQuartzJob(@PathVariable("entityType") String entityType) throws ThingsboardException {
@@ -81,6 +84,7 @@ public class DeviceDataFetchJobController extends BaseController {
      * @throws ExecutionException
      * @throws InterruptedException
      */
+    @ApiOperation(value = "启动或者停止设备",notes = "输入参数status为true表示设备启动，false为停止；cron为采集数据周期，默认为1秒")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/plugin/exec", method = RequestMethod.POST, params = {"status","cron"})
     @ResponseBody

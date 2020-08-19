@@ -4,6 +4,7 @@ package org.thingsboard.server.controller.idscontroller;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,7 @@ public class TrafficTrendController {
 	 * @param end
 	 * @return Map<x(y)轴，List<值>>
 	 */
+	@ApiOperation(value="网络流量趋势折线图",notes="start起始时间，end截止时间")
 	@PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
 	@RequestMapping(value = "/trafficTrend/networktraffictend",method= RequestMethod.GET)
 //	@ApiOperation(value = "", notes = "以HashMap形式返回对应x,y值查询对应的值，x为时间，y为流量值，默认计算当前时间前的7个小时")
@@ -54,6 +56,7 @@ public class TrafficTrendController {
 	 * 获取DashBoard上方异常行为周报信息
 	 * @return
 	 */
+	@ApiOperation(value="异常行为周报")
 	@PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
 	@RequestMapping(value = "/trafficTrend/networkabnormalcountinfo",method= RequestMethod.GET)
 //	@ApiOperation(value = "获取DashBoard上方异常行为周报信息", notes = "以HashMap形式返回对应x,y值查询对应的值，x为时间，y为异常数量")

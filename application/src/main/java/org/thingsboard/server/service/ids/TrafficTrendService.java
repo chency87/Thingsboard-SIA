@@ -62,6 +62,10 @@ public class TrafficTrendService {
 				data.add(dataMb.toString());
 			}
 			else {
+				//2020.8.19添加
+				Double dataMb = (double)0;
+				data.add(dataMb.toString());
+				//
 				continue;
 			}
 

@@ -1,6 +1,7 @@
 package org.thingsboard.server.controller.idscontroller;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ public class ProtoHandlePluginController  extends BaseController {
     @Autowired
     private DataFetchProtoHandlePluginManager dfp;
 
+    @ApiOperation(value = "查看所有系统内添加的插件")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN')")
     @RequestMapping(value = "/proto/handle/plugin/all", method = RequestMethod.GET )
     public List<DataFetchPlugin> getAllPlugin(){
@@ -50,6 +52,8 @@ public class ProtoHandlePluginController  extends BaseController {
     }
 
 
+    @ApiOperation(value = "上传协议插件",notes = "参数plugin为需要上传的插件协议jar包；参数name为插件名称；" +
+            "参数status为true表示协议可用；参数requires为使用此插件需要上传的配置信息")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN')")
     @RequestMapping(value = "proto/handle/plugin/upload", method = RequestMethod.POST )
     public DeferredResult<ResponseEntity> uploadFileAndData(@RequestParam(value = "plugin") MultipartFile file, @RequestParam(value = "name") String name,
@@ -101,9 +105,11 @@ public class ProtoHandlePluginController  extends BaseController {
 //    }
 //
 
-    //TODO : 获得所有可使用插件名称
+/*
+    @ApiOperation(value = "与上面的重复")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN')")
     @RequestMapping(value = "/proto/handle/plugin/get", method = RequestMethod.GET )
+//    @ApiOperation(value = "post请求调用示例", notes = "invokePost说明", httpMethod = "POST")
     public List<String> getAllPluginName() throws MalformedURLException, DocumentException {
         List<String> pluginNames = new ArrayList<>();
         List<DataFetchPlugin> dataFetchPlugins = dfp.updatePluginList();
@@ -111,7 +117,7 @@ public class ProtoHandlePluginController  extends BaseController {
             dataFetchPlugins.forEach(dataFetchPlugin -> {pluginNames.add(dataFetchPlugin.getName());});
         }
         return pluginNames;
-    }
+    }*/
 
     /**
      * 显示选中协议的配置信息，若有配置，显示配置信息，若没有配置过，则只显示需要配置的键，值为空。
@@ -122,6 +128,7 @@ public class ProtoHandlePluginController  extends BaseController {
      * @throws ExecutionException
      * @throws InterruptedException
      */
+    @ApiOperation(value = "显示设备的配置信息",notes = "若有配置，显示配置信息，若没有配置过，则只显示需要配置的键，值为空")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/device/config", method = RequestMethod.POST)
     @ResponseBody
@@ -171,6 +178,7 @@ public class ProtoHandlePluginController  extends BaseController {
      * @param map       需要写入向数据库的属性
      * @return
      */
+    @ApiOperation(value = "将配置的设备协议信息进行保存/更新")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/device/save", method = RequestMethod.POST)
     @ResponseBody
@@ -187,10 +195,6 @@ public class ProtoHandlePluginController  extends BaseController {
 
         return getImmediateDeferredResult("SUCCESS", HttpStatus.OK);
     }
-
-
-
-
 
 
     private DeferredResult<ResponseEntity> getImmediateDeferredResult(String message, HttpStatus status) {

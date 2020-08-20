@@ -36,7 +36,7 @@ public class SystemParameterController {
         return systemParameterService.getSystemParameters();
     }
 
-    @Autowired
+    /*@Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
@@ -53,6 +53,6 @@ public class SystemParameterController {
         timer.schedule(timerTask,10,10000);
 
         return systemParameterService.getSystemParameters();
-    }
+    }*/
 
 }

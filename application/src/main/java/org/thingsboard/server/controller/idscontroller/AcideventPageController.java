@@ -19,7 +19,9 @@ public class AcideventPageController {
     @Autowired
     private AcideventPageService iacids;
 
-    @ApiOperation(value="分页获取网络流量表",notes="page是指第几页，size是每页数量")
+    @ApiOperation(value="分页获取网络流量表",notes="page是指第几页，size是每页数量" +
+            "cid:CID ;sid:传感器号;signature:对应规则；timestamp:时间戳;ipDst:数据;ipProto:上级协议;ipSrc:源地址;sigClassId:警告分类;sigName:警告名称；sigPriority:优先级;tdport:tcp目的端口;" +
+            "udport:udp目的端口;usport:udp源端口;tsport:tcp源端口")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/acid/byPage", method = RequestMethod.GET)
     @ResponseBody

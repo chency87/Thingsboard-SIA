@@ -163,7 +163,7 @@ public abstract class AbstractControllerTest {
                 this.mappingJackson2HttpMessageConverter);
     }
 
-    @Before
+//    @Before
     public void setup() throws Exception {
         log.info("Executing setup");
         if (this.mockMvc == null) {
@@ -202,7 +202,7 @@ public abstract class AbstractControllerTest {
         log.info("Executed setup");
     }
 
-    @After
+//    @After
     public void teardown() throws Exception {
         log.info("Executing teardown");
         loginSysAdmin();

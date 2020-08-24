@@ -325,7 +325,7 @@ spring:
     database-platform: "${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}"
   datasource:
     driverClassName: "${SPRING_DRIVER_CLASS_NAME:org.postgresql.Driver}"
-    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://192.168.8.115:5432/thingsboard}"
+    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/thingsboard}"
     username: "${SPRING_DATASOURCE_USERNAME:postgres}"
     password: "${SPRING_DATASOURCE_PASSWORD:123456}"
     hikari:
@@ -491,6 +491,19 @@ transport:
     bind_address: "${COAP_BIND_ADDRESS:0.0.0.0}"
     bind_port: "${COAP_BIND_PORT:5683}"
     timeout: "${COAP_TIMEOUT:10000}"
+#
+org:
+  jcasbin:
+    url: "jdbc:postgresql://localhost:5432/thingsboard"
+    driverClassName: "${SPRING_DRIVER_CLASS_NAME:org.postgresql.Driver}"
+    username: "${SPRING_DATASOURCE_USERNAME:postgres}"
+    password: "${SPRING_DATASOURCE_PASSWORD:123456}"
+    model-path: "conf/abac_rule_model.conf"
+#  org.jcasbin.url=jdbc:mysql://localhost:3306/casbin?useSSL=false
+#  org.jcasbin.driver-class-name=com.mysql.jdbc.Driver
+#  org.jcasbin.username=root
+#  org.jcasbin.password=root
+#  org.jcasbin.model-path=conf/authz_model.conf
 
 swagger:
   api_path_regex: "${SWAGGER_API_PATH_REGEX:/api.*}"

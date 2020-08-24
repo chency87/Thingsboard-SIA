@@ -1,3 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugins/>
+<plugins>
+  <plugin>
+    <name>modbus</name>
+    <jar>E:\WorkSpace\Thingsboard-SIA\static\proto\modbus.jar</jar>
+    <class>cv</class>
+    <status>true</status>
+    <requires>
+      <require name="require0">ssa</require>
+      <require name="require1">sasd</require>
+      <require name="require2">asdsad</require>
+      <require name="require3">asdsss</require>
+    </requires>
+  </plugin>
+</plugins>

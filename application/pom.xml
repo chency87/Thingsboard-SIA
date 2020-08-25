@@ -254,11 +254,11 @@
             <version>2.0.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-configuration-processor</artifactId>-->
+            <!--<optional>true</optional>-->
+        <!--</dependency>-->
         <!--<dependency>-->
             <!--<groupId>org.casbin</groupId>-->
             <!--<artifactId>casbin-spring-boot-starter</artifactId>-->

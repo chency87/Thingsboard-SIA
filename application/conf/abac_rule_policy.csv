@@ -1,2 +1,2 @@
-p,r.sub.age > 18 && r.sub.age < 25,/data1,read
-p,r.sub.age < 60,/data2,write
+p,sub.age > 18 && sub.age < 25 && sub.name == 'bob', url,/data1,read
+p,sub.age < 60, url,/data2,write

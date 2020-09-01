@@ -59,6 +59,16 @@ public class TextPageData<T extends SearchTextBased<? extends UUIDBased>> {
         return data;
     }
 
+    public void setData(List<T> data){
+        this.data.clear();
+        for(T t:data)
+        {
+            this.data.add(t);
+        }
+    }
+
+
+
     @JsonProperty("hasNext")
     public boolean hasNext() {
         return hasNext;

@@ -114,9 +114,12 @@ public class DeviceController extends BaseController {
 
             if (device.getId() == null) {
                 deviceStateService.onDeviceAdded(savedDevice);
+                String subRule = "sub.id=='" + getCurrentUser().getId().getId() +"' && sub.email=='"+getCurrentUser().getEmail()+"'";
+                enforcerFactory.getEnforcer().addPolicy(subRule,Resource.DEVICE.toString(),savedDevice.getId().getId().toString(),Operation.ALL.toString());
             } else {
                 deviceStateService.onDeviceUpdated(savedDevice);
             }
+
             return savedDevice;
         } catch (Exception e) {
             logEntityAction(emptyId(EntityType.DEVICE), device,
@@ -288,11 +291,13 @@ public class DeviceController extends BaseController {
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
             TextPageLink pageLink = createPageLink(limit, textSearch, idOffset, textOffset);
+            TextPageData<Device> deviceTextPageData;
             if (type != null && type.trim().length() > 0) {
-                return checkNotNull(deviceService.findDevicesByTenantIdAndType(tenantId, type, pageLink));
+                deviceTextPageData = deviceService.findDevicesByTenantIdAndType(tenantId, type, pageLink);
             } else {
-                return checkNotNull(deviceService.findDevicesByTenantId(tenantId, pageLink));
+                deviceTextPageData = deviceService.findDevicesByTenantId(tenantId, pageLink);
             }
+            return checkNotNull( filterAccessControlResult(deviceTextPageData));
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -490,6 +495,17 @@ public class DeviceController extends BaseController {
             return secretKey;
         }
         return DataConstants.DEFAULT_SECRET_KEY;
+    }
+    private TextPageData<Device> filterAccessControlResult(TextPageData<Device> textPageData){
+        textPageData.setData(textPageData.getData().stream().filter(device -> {
+            try {
+                accessControlService.checkPermission(getCurrentUser(), Resource.DEVICE, Operation.READ, device.getId(), device);
+                return true;
+            } catch (ThingsboardException e) {
+                return false;
+            }
+        }).collect(Collectors.toList()));
+        return textPageData;
     }
 
     private Boolean hasJob(String jobName){

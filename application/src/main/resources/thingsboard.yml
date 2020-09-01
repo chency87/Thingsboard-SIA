@@ -498,7 +498,7 @@ org:
     driverClassName: "${SPRING_DRIVER_CLASS_NAME:org.postgresql.Driver}"
     username: "${SPRING_DATASOURCE_USERNAME:postgres}"
     password: "${SPRING_DATASOURCE_PASSWORD:123456}"
-    model-path: "conf/abac_rule_model.conf"
+    model-path: "E:/WorkSpace/Thingsboard-SIA/application/conf/abac_rule_model.conf"
 #  org.jcasbin.url=jdbc:mysql://localhost:3306/casbin?useSSL=false
 #  org.jcasbin.driver-class-name=com.mysql.jdbc.Driver
 #  org.jcasbin.username=root

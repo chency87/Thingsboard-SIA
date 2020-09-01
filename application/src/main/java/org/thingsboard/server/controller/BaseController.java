@@ -96,6 +96,7 @@ import org.thingsboard.server.exception.ThingsboardErrorResponseHandler;
 import org.thingsboard.server.service.component.ComponentDiscoveryService;
 import org.thingsboard.server.service.security.model.SecurityUser;
 import org.thingsboard.server.service.security.permission.AccessControlService;
+import org.thingsboard.server.service.security.permission.EnforcerFactory;
 import org.thingsboard.server.service.security.permission.Operation;
 import org.thingsboard.server.service.security.permission.Resource;
 import org.thingsboard.server.service.state.DeviceStateService;
@@ -118,6 +119,9 @@ public abstract class BaseController {
     public static final String YOU_DON_T_HAVE_PERMISSION_TO_PERFORM_THIS_OPERATION = "You don't have permission to perform this operation!";
 
     private static final ObjectMapper json = new ObjectMapper();
+
+    @Autowired
+    EnforcerFactory enforcerFactory;
 
     @Autowired
     private ThingsboardErrorResponseHandler errorResponseHandler;

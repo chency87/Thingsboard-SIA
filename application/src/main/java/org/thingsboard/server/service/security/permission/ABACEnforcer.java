@@ -1,6 +1,7 @@
 package org.thingsboard.server.service.security.permission;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.common.protocol.types.Field;
 import org.casbin.jcasbin.main.Enforcer;
 import org.casbin.jcasbin.model.FunctionMap;
@@ -53,8 +54,7 @@ public class ABACEnforcer extends Enforcer {
        super(modelPath,policyFile,enableLog);
     }
 
-    public boolean enforce(Object sub, Object type,Object id,Object act){
-
+    public boolean enforcer(Object sub, Object type,Object id,Object act){
         SecurityAccessContext cxt = new SecurityAccessContext(sub,type,id,act,null);
         List<List<String>> policy = getPolicy();
         List<List<String>> filteredRules = filterRules(policy,cxt);
@@ -76,8 +76,26 @@ public class ABACEnforcer extends Enforcer {
     }
 
     private List<List<String>> filterRules(List<List<String>> allRules, SecurityAccessContext cxt){
-        return allRules.parallelStream().filter(
-                item -> cxt.getType().equals(item.get(1)) && cxt.getId().equals(item.get(2)) &&(item.get(3).equals(Operation.ALL.toString()) || cxt.getAct().equals(item.get(3)))).collect(Collectors.toList());
+        return allRules.parallelStream().filter( item ->
+            {
+                if(cxt.getAct().toString().equals(Operation.CREATE.toString())
+                        && isNotEmptyAndBlank(cxt.getType().toString())){
+                    if( cxt.getType().toString().equals(item.get(1))
+                            && cxt.getAct().toString().equals(item.get(3))){
+                        return true;
+                    }
+                }else{
+                    if(isNotEmptyAndBlank(cxt.getType().toString())
+                            && isNotEmptyAndBlank(cxt.getId().toString())
+                            && cxt.getType().toString().equals(item.get(1))
+                            && cxt.getId().toString().equals(item.get(2))){
+                        if(item.get(3).equals(Operation.ALL.toString()) || cxt.getAct().equals(item.get(3))){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }).collect(Collectors.toList());
     }
 
     private boolean checkAccessRules(List<List<String>> matchedRules, SecurityAccessContext cxt) {
@@ -91,5 +109,5 @@ public class ABACEnforcer extends Enforcer {
             return false;
         });
     }
-
+    private boolean isNotEmptyAndBlank(String str){ return StringUtils.isNotBlank(str) && StringUtils.isNotEmpty(str);}
 }

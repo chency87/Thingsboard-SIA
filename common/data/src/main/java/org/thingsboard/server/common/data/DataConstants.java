@@ -27,9 +27,10 @@ public class DataConstants {
     public static final String CLIENT_SCOPE = "CLIENT_SCOPE";
     public static final String SERVER_SCOPE = "SERVER_SCOPE";
     public static final String SHARED_SCOPE = "SHARED_SCOPE";
+    public static final String IDENTITY_SCOPE = "IDENTITY_SCOPE";
 
     public static final String[] allScopes() {
-        return new String[]{CLIENT_SCOPE, SHARED_SCOPE, SERVER_SCOPE};
+        return new String[]{CLIENT_SCOPE, SHARED_SCOPE, SERVER_SCOPE,IDENTITY_SCOPE};
     }
 
     public static final String ALARM = "ALARM";

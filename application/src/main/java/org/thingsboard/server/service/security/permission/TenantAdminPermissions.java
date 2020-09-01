@@ -15,26 +15,45 @@
  */
 package org.thingsboard.server.service.security.permission;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import org.casbin.jcasbin.main.Enforcer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.thingsboard.server.common.data.DataConstants;
+import org.thingsboard.server.common.data.EntityType;
 import org.thingsboard.server.common.data.HasTenantId;
 import org.thingsboard.server.common.data.User;
 import org.thingsboard.server.common.data.id.EntityId;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.id.UserId;
+import org.thingsboard.server.common.data.kv.AttributeKvEntry;
 import org.thingsboard.server.common.data.security.Authority;
+import org.thingsboard.server.controller.idscontroller.ConstantConfValue;
+import org.thingsboard.server.dao.attributes.AttributesService;
+import org.thingsboard.server.plugin.bean.BaseIdentityAttr;
+import org.thingsboard.server.plugin.bean.DynamicClassReflectUtils;
 import org.thingsboard.server.service.security.model.SecurityUser;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 @Component(value="tenantAdminPermissions")
 public class TenantAdminPermissions extends AbstractPermissions {
+    @Autowired
+    EnforcerFactory enforcerFactory;
+    @Autowired
+    AttributesService attributesService;
+
 
     public TenantAdminPermissions() {
         super();
         put(Resource.ADMIN_SETTINGS, PermissionChecker.allowAllPermissionChecker);
         put(Resource.ALARM, tenantEntityPermissionChecker);
         put(Resource.ASSET, tenantEntityPermissionChecker);
-        put(Resource.DEVICE, tenantEntityPermissionChecker);
+        put(Resource.DEVICE, tenantDevicePermissionChecker);
         put(Resource.CUSTOMER, tenantEntityPermissionChecker);
         put(Resource.DASHBOARD, tenantEntityPermissionChecker);
         put(Resource.ENTITY_VIEW, tenantEntityPermissionChecker);
@@ -47,6 +66,44 @@ public class TenantAdminPermissions extends AbstractPermissions {
 
 
     }
+
+
+
+    public PermissionChecker tenantDevicePermissionChecker = new PermissionChecker() {
+
+        @Override
+        public boolean hasPermission(SecurityUser user, Operation operation, EntityId entityId, HasTenantId entity) {
+            ABACEnforcer enforcer = enforcerFactory.getEnforcer();
+
+            try {
+                List<AttributeKvEntry> attributeKvEntries = attributesService.findAll(user.getTenantId(),user.getId(),DataConstants.IDENTITY_SCOPE).get();
+                Map<String, Object> propertiesMap = new HashMap<>();
+                propertiesMap.put("id",user.getId().toString());
+                propertiesMap.put("tenantId",user.getTenantId().getId());
+                propertiesMap.put("type",user.getId().getEntityType().toString());
+                propertiesMap.put("name",user.getFirstName()+user.getLastName());
+                propertiesMap.put("email",user.getEmail());
+                for (AttributeKvEntry attributeKvEntry:attributeKvEntries) {
+                    propertiesMap.put(attributeKvEntry.getKey(),attributeKvEntry.getValue());
+                }
+                Object obj = DynamicClassReflectUtils.getTarget(new BaseIdentityAttr(),propertiesMap);
+
+                if(enforcer.enforcer(obj,"DEVICE",entityId,operation.toString())){
+                    System.out.println(user.getEmail() + " EXEC Permission  " + entityId +" -- " + operation + "--- ALLOWED");
+                    if(operation.equals(Operation.DELETE)){
+                        enforcer.removeFilteredPolicy(1,"DEVICE",entityId.toString());
+                    }
+                    return true;
+                }
+                System.out.println(user.getEmail() + " EXEC Permission  " + entityId +" -- " + operation + "--- DENIED");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    };
 
     public static final PermissionChecker tenantEntityPermissionChecker = new PermissionChecker() {
 

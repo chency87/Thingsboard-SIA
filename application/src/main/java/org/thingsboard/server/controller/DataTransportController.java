@@ -30,6 +30,8 @@ import org.thingsboard.server.executejob.BaseDataTransportJob;
 import org.thingsboard.server.service.ids.MqttTransportService;
 import org.thingsboard.server.service.ids.QuartzManager;
 import org.thingsboard.server.service.security.model.SecurityUser;
+import org.thingsboard.server.service.security.permission.Operation;
+import org.thingsboard.server.service.security.permission.Resource;
 import org.thingsboard.server.utils.JsonConvertUtils;
 
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -116,7 +119,15 @@ public class DataTransportController extends BaseController {
             TextPageLink pageLink = createPageLink(limit, null, idOffset, null);
             TextPageData<Device> pageData =  deviceService.findDevicesByTenantId(tenantId, pageLink);
             hasNext = pageData.hasNext();
-            List<Device> list =pageData.getData();
+            List<Device> list1 =pageData.getData();
+            List<Device> list = list1.stream().filter(device -> {
+                try {
+                    accessControlService.checkPermission(getCurrentUser(), Resource.DEVICE, Operation.READ_TELEMETRY, device.getId(), device);
+                    return true;
+                } catch (ThingsboardException e) {
+                    return false;
+                }
+            }).collect(Collectors.toList());
             for (Device dev: list) {
                 List<TsKvEntry> tsKvEntryList = tsService.findAllLatest(tenantId, dev.getId()).get();
                 lastId = dev.getId().toString();

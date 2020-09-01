@@ -86,9 +86,7 @@ public class JCasbinTest extends AbstractControllerTest {
         enforcer.addPolicy("sub.name == 'alice'",EntityType.DEVICE.toString(),"1eabb6a85cacf508cc473c0690c1ed2",Operation.READ.toString());
         enforcer.addPolicy("sub.name == 'alice'",EntityType.DEVICE.toString(),"1eabb6a85cacf508cc473c0690c1ed2",Operation.WRITE.toString());
         enforcer.addPolicy("sub.name == 'alice' && sub.age > 18",EntityType.DEVICE.toString(),"1eabb6a85cacf508cc473c0690c1ed2",Operation.WRITE_TELEMETRY.toString());
-
         enforcer.addPolicy("sub.name == 'alice' || sub.age > 18",EntityType.DEVICE.toString(),"1eabb6a85cacf508cc473c0690c1ed2",Operation.ASSIGN_TO_CUSTOMER.toString());
-
         enforcer.addPolicy("sub.name == 'bob'",EntityType.DEVICE.toString(),"1eabb6a85cacf508cc473c0690c1ed2",Operation.ALL.toString());
     }
 

@@ -35,7 +35,9 @@ public class AcideventPageService {
 
     public PageInfo findAcideventbyPage(int page, int size) {
         PageHelper.startPage(page,size);
-        PageInfo<Acidevent> pageInfo = new PageInfo<>();
+//        PageInfo<Acidevent> pageInfo = new PageInfo<>();
+
+
         PageRequest request = PageRequest.of(page-1,size);
         Page<EventSnortEntity> aa = eventSnortRepository.findAll(request);
         List<EventSnortEntity> a = aa.getContent();
@@ -85,7 +87,14 @@ public class AcideventPageService {
             }
             list.add(acidevent);
         }
-        pageInfo =  new PageInfo<>(list);
+
+        PageInfo<Acidevent> pageInfo = new PageInfo<>(list);
+        int total = eventSnortRepository.getCount();
+        pageInfo.setTotal(total);
+        boolean hasnextpage = page*size>total?false:true;
+        boolean haspreviouspage = (total!=0&&page>1)?true:false;
+        pageInfo.setHasPreviousPage( haspreviouspage);
+        pageInfo.setHasNextPage(hasnextpage);
         return pageInfo;
     }
 

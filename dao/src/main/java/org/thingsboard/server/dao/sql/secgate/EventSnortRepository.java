@@ -31,7 +31,9 @@ public interface EventSnortRepository extends JpaRepository<EventSnortEntity, In
 
     @Query(value = "SELECT count(event.cid) FROM event WHERE sid = ?1 ",nativeQuery = true)
     Integer getAlertCount(Integer sid);
-
+//求event的记录总数
+    @Query(value = "SELECT count(event.cid) FROM event",nativeQuery = true)
+    Integer getCount();
 
     @Query(value = "SELECT count(d.data_payload) FROM data d INNER JOIN event e ON d.cid=e.cid AND d.sid=e.sid AND e.timestamp > (now() - interval '144 HOUR');",nativeQuery = true)
     Integer getTrafficTrend();

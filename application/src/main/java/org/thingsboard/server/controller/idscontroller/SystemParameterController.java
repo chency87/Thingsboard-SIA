@@ -26,7 +26,7 @@ public class SystemParameterController {
     @Autowired
     private SystemParameterService systemParameterService;
 
-    @ApiOperation(value="系统的状态",notes="systemName：系统名称；systemVersion：版本；runningTime：运行时间；" +
+    @ApiOperation(value="网关状态",notes="systemName：系统名称；systemVersion：版本；runningTime：运行时间；" +
             "cpuUtilization：CPU利用率；memoryUtilization：内存利用率；swapUtilization：swap利用率" +
             "storageSpaceUtilization：存储空间利用率；numOfDevice：设备个数；numOfProtocol：协议数；numOfDataCache：缓存数据量")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")

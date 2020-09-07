@@ -53,8 +53,8 @@ public class TenantAdminPermissions extends AbstractPermissions {
         put(Resource.ADMIN_SETTINGS, PermissionChecker.allowAllPermissionChecker);
         put(Resource.ALARM, tenantEntityPermissionChecker);
         put(Resource.ASSET, tenantEntityPermissionChecker);
-//        put(Resource.DEVICE, tenantDevicePermissionChecker);
-        put(Resource.DEVICE, tenantEntityPermissionChecker);
+        put(Resource.DEVICE, tenantDevicePermissionChecker);
+//        put(Resource.DEVICE, tenantEntityPermissionChecker);
         put(Resource.CUSTOMER, tenantEntityPermissionChecker);
         put(Resource.DASHBOARD, tenantEntityPermissionChecker);
         put(Resource.ENTITY_VIEW, tenantEntityPermissionChecker);
@@ -88,15 +88,17 @@ public class TenantAdminPermissions extends AbstractPermissions {
                     propertiesMap.put(attributeKvEntry.getKey(),attributeKvEntry.getValue());
                 }
                 Object obj = DynamicClassReflectUtils.getTarget(new BaseIdentityAttr(),propertiesMap);
-
+                if(operation.equals(Operation.CREATE)){
+                    return true;
+                }
                 if(enforcer.enforcer(obj,"DEVICE",entityId,operation.toString())){
-                    System.out.println(user.getEmail() + " EXEC Permission  " + entityId +" -- " + operation + "--- ALLOWED");
+//                    System.out.println(user.getEmail() + " EXEC Permission  " + entityId +" -- " + operation + "--- ALLOWED");
                     if(operation.equals(Operation.DELETE)){
                         enforcer.removeFilteredPolicy(1,"DEVICE",entityId.toString());
                     }
                     return true;
                 }
-                System.out.println(user.getEmail() + " EXEC Permission  " + entityId +" -- " + operation + "--- DENIED");
+//                System.out.println(user.getEmail() + " EXEC Permission  " + entityId +" -- " + operation + "--- DENIED");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {

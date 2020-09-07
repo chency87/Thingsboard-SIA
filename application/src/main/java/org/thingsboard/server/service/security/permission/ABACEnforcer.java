@@ -80,6 +80,7 @@ public class ABACEnforcer extends Enforcer {
             {
                 if(cxt.getAct().toString().equals(Operation.CREATE.toString())
                         && isNotEmptyAndBlank(cxt.getType().toString())){
+
                     if( cxt.getType().toString().equals(item.get(1))
                             && cxt.getAct().toString().equals(item.get(3))){
                         return true;

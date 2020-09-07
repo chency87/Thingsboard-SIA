@@ -132,15 +132,16 @@ public class ProtoHandlePluginController  extends BaseController {
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/{entityType}/{entityId}/device/config", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String,String> show( @PathVariable("entityType") String entityType, @PathVariable("entityId") String entityIdStr,
-                                    @RequestParam (name = "pluginName" ,required=false)  String protocol
+    public Map<String,Object> show( @PathVariable("entityType") String entityType, @PathVariable("entityId") String entityIdStr,
+                                    @RequestParam (required=false)  String protocol
     ) throws ThingsboardException, ExecutionException, InterruptedException, MalformedURLException, DocumentException {
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         SecurityUser user = getCurrentUser();
-        List<String> keyList = toKeysList(ConstantConfValue.dataFetchPluginName);
         EntityId entity = EntityIdFactory.getByTypeAndId(entityType, entityIdStr);
         //判断前端是否传入协议，若没传入则使用此设备配置好的协议信息
-        if (protocol == null || "".equals(protocol) || " ".equals(protocol)){
+        if ( org.apache.commons.lang3.StringUtils.isEmpty(protocol)
+                || org.apache.commons.lang3.StringUtils.isBlank(protocol)){
+            List<String> keyList = toKeysList(ConstantConfValue.dataFetchPluginName);
             ListenableFuture<List<AttributeKvEntry>> listListenableFuture = attributesService.find(user.getTenantId(), entity, DataConstants.CLIENT_SCOPE, keyList);
             List<AttributeKvEntry> attributeKvEntries = listListenableFuture.get();
             //若既没有传入协议，此设备也没有配置，直接返回空值
@@ -150,10 +151,10 @@ public class ProtoHandlePluginController  extends BaseController {
             attributeKvEntries.forEach(attributeKvEntry -> {
                 String pluginName = attributeKvEntry.getValueAsString();
                 try {
-                    List<String> requiresList1 = getRequiresList(pluginName);
-                    ListenableFuture<List<AttributeKvEntry>> future = attributesService.find(user.getTenantId(), entity, DataConstants.CLIENT_SCOPE, requiresList1);
+                    List<String> requiresList = getRequiresList(pluginName);
+                    ListenableFuture<List<AttributeKvEntry>> future = attributesService.find(user.getTenantId(), entity, DataConstants.CLIENT_SCOPE, requiresList);
                     try {
-                        future.get().forEach(attributeKvEntry1 -> { map.put(attributeKvEntry1.getKey(), attributeKvEntry1.getValue().toString()); });
+                        future.get().forEach(attributeKv -> { map.put(attributeKv.getKey(), attributeKv.getValue()); });
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -163,30 +164,47 @@ public class ProtoHandlePluginController  extends BaseController {
             });
             //传入协议了
         }else{
-
-            ListenableFuture<List<AttributeKvEntry>> listListenableFuture = attributesService.find(user.getTenantId(), entity, DataConstants.CLIENT_SCOPE, keyList);
-            List<AttributeKvEntry> attributeKvEntries = listListenableFuture.get();
-            if(attributeKvEntries == null){
-                //传入的协议有误
-                map.put(protocol,"传入协议配置错误");
-            }
-            attributeKvEntries.forEach(attributeKvEntry -> {
-                if (attributeKvEntry.getValueAsString().equals(protocol)){     //数据库里有属性值
-                    DataFetchPlugin plugin = dfp.getPluginInfoFromList(protocol);
-                    List<String> requires =  plugin.getRequires();
-                    System.out.println("_________--"+ requires);
-                    ListenableFuture<List<AttributeKvEntry>> listListenableFuture1 = attributesService.find(user.getTenantId(), entity, DataConstants.CLIENT_SCOPE, requires);
-                    try {
-                        listListenableFuture1.get().forEach(attributeKvEntry1 -> { map.put(attributeKvEntry1.getKey(), attributeKvEntry1.getValue().toString()); });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }else {
-                    map.put(protocol,"此协议的配置文件有误");
+            List<String> keyList = toKeysList(protocol);
+            DataFetchPlugin plugin = dfp.getPluginInfoFromList(protocol);
+            List<String> requires =  plugin.getRequires();
+            ListenableFuture<List<AttributeKvEntry>> listListenableFuture1 = attributesService.find(user.getTenantId(), entity, DataConstants.CLIENT_SCOPE, requires);
+            if(listListenableFuture1.get().size() > 0){
+                try {
+                    listListenableFuture1.get().forEach(attributeKvEntry1 -> { map.put(attributeKvEntry1.getKey(), attributeKvEntry1.getValue());  });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
                 }
-            });
+            }else {
+                requires.forEach(item -> map.put(item,""));
+            }
+
+
+
+//            ListenableFuture<List<AttributeKvEntry>> listListenableFuture = attributesService.find(user.getTenantId(), entity, DataConstants.CLIENT_SCOPE, keyList);
+//            List<AttributeKvEntry> attributeKvEntries = listListenableFuture.get();
+//            if(attributeKvEntries == null){
+//                //传入的协议有误
+//                map.put(protocol,"传入协议配置错误");
+//            }
+//            attributeKvEntries.forEach(attributeKvEntry -> {
+//                if (attributeKvEntry.getValueAsString().equals(protocol)){     //数据库里有属性值
+//                    DataFetchPlugin plugin = dfp.getPluginInfoFromList(protocol);
+//                    List<String> requires =  plugin.getRequires();
+//                    System.out.println("_________--"+ requires);
+//                    ListenableFuture<List<AttributeKvEntry>> listListenableFuture1 = attributesService.find(user.getTenantId(), entity, DataConstants.CLIENT_SCOPE, requires);
+//                    try {
+//                        listListenableFuture1.get().forEach(attributeKvEntry1 -> { map.put(attributeKvEntry1.getKey(), attributeKvEntry1.getValue().toString()); });
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    } catch (ExecutionException e) {
+//                        e.printStackTrace();
+//                    }
+//                }else {
+//                    map.put(protocol,"此协议的配置文件有误");
+//                }
+//            });
         }
         return map;
     }
@@ -220,14 +238,14 @@ public class ProtoHandlePluginController  extends BaseController {
                                                          @RequestParam(name = "protocol") String protocol) throws ThingsboardException {
         List<AttributeKvEntry> list = new ArrayList<>();
         if (map.isEmpty()) return getImmediateDeferredResult("FAILURE",HttpStatus.NO_CONTENT);
-        map.put("pluginName",protocol);
+        map.put(ConstantConfValue.dataFetchPluginName,protocol);
         SecurityUser user = getCurrentUser();
         EntityId entity = EntityIdFactory.getByTypeAndId(entityType, entityIdStr);
         map.entrySet().forEach(s -> {
             list.add(new BaseAttributeKvEntry(new StringDataEntry(s.getKey(), s.getValue()), System.currentTimeMillis()));
         });
-        attributesService.save(user.getTenantId(),entity,DataConstants.CLIENT_SCOPE,list);
-        return getImmediateDeferredResult("SUCCESS", HttpStatus.OK);
+        ListenableFuture<List<Void>> result = attributesService.save(user.getTenantId(),entity,DataConstants.CLIENT_SCOPE,list);
+        return getImmediateDeferredResult("INSERT SUCCESS", HttpStatus.OK);
     }
 
 

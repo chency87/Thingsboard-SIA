@@ -128,7 +128,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     @ResponseBody
     public User saveUser(@RequestBody User user,
-                         @RequestParam(required = false, defaultValue = "true") boolean sendActivationMail,
+                         @RequestParam(required = false, defaultValue = "false") boolean sendActivationMail,
             HttpServletRequest request) throws ThingsboardException {
         try {
 
@@ -246,7 +246,7 @@ public class UserController extends BaseController {
         }
     }
 
-    @PreAuthorize("hasAuthority('SYS_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SYS_ADMIN','TENANT_ADMIN')")
     @RequestMapping(value = "/tenant/{tenantId}/users", params = { "limit" }, method = RequestMethod.GET)
     @ResponseBody
     public TextPageData<User> getTenantAdmins(

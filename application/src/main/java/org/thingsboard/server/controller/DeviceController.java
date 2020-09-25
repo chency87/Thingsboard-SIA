@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,7 @@ import org.thingsboard.server.common.data.exception.ThingsboardException;
 import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.DeviceId;
 import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.kv.AttributeKvEntry;
 import org.thingsboard.server.common.data.page.TextPageData;
 import org.thingsboard.server.common.data.page.TextPageLink;
 import org.thingsboard.server.common.data.security.DeviceCredentials;
@@ -58,9 +60,8 @@ import org.thingsboard.server.service.security.permission.Resource;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @RestController
@@ -343,6 +344,42 @@ public class DeviceController extends BaseController {
     }
 
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @RequestMapping(value = "/device/status", params = {"deviceIds"}, method = RequestMethod.GET)
+    @ResponseBody
+    public Map<Object,Boolean> getDeviceStatus(@RequestParam("deviceIds") String[] strDeviceIds) throws ThingsboardException {
+        checkArrayParameter("deviceIds", strDeviceIds);
+        Map<Object,Boolean> statusMap = new HashMap<>();
+        try {
+            SecurityUser user = getCurrentUser();
+            TenantId tenantId = user.getTenantId();
+            List<DeviceId> deviceIds = new ArrayList<>();
+            for (String strDeviceId : strDeviceIds) {
+                DeviceId id = new DeviceId(toUUID(strDeviceId));
+                statusMap.put(id,hasJob(id.toString()));
+            }
+            return statusMap;
+        } catch (Exception e) {
+            throw handleException(e);
+        }
+    }
+
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN')")
+    @RequestMapping(value = "/device/{deviceId}/status", method = RequestMethod.GET)
+    @ResponseBody
+    public List<AttributeKvEntry> getDeviceStatusById( @PathVariable("deviceId") String strDeviceId) throws ThingsboardException{
+        try {
+            SecurityUser user = getCurrentUser();
+            TenantId tenantId = user.getTenantId();
+            DeviceId id = new DeviceId(toUUID(strDeviceId));
+            List<String> list =  toKeysList("dataAccessWay,status");
+            ListenableFuture<List<AttributeKvEntry>> attributes= attributesService.find(tenantId,id,"IDENTITY_SCOPE",list);
+            return checkNotNull(attributes.get());
+        } catch (Exception e) {
+            throw handleException(e);
+        }
+    }
+
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/devices", params = {"deviceIds"}, method = RequestMethod.GET)
     @ResponseBody
     public List<Device> getDevicesByIds(
@@ -507,6 +544,15 @@ public class DeviceController extends BaseController {
         }).collect(Collectors.toList()));
         return textPageData;
     }
+
+    private List<String> toKeysList(String keys) {
+        List<String> keyList = null;
+        if (!StringUtils.isEmpty(keys)) {
+            keyList = Arrays.asList(keys.split(","));
+        }
+        return keyList;
+    }
+
 
     private Boolean hasJob(String jobName){
         List<Map<String, Object>> list = quartzManager.queryAllJob();

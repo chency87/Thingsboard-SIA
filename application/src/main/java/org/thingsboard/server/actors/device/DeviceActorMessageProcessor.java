@@ -71,16 +71,8 @@ import org.thingsboard.server.service.rpc.ToServerRpcResponseActorMsg;
 import org.thingsboard.server.service.transport.msg.TransportToDeviceActorMsgWrapper;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -131,6 +123,18 @@ class DeviceActorMessageProcessor extends AbstractContextAwareMsgProcessor {
             this.defaultMetaData = new TbMsgMetaData();
             this.defaultMetaData.putValue("deviceName", deviceName);
             this.defaultMetaData.putValue("deviceType", deviceType);
+            this.defaultMetaData.putValue("deviceId",device.getId().getId().toString());
+            try {
+                ListenableFuture<Optional<AttributeKvEntry>> attribute = systemContext.getAttributesService().find(tenantId,deviceId,"SHARED_SCOPE","transport");
+                if(attribute.get().isPresent()){
+                    this.defaultMetaData.putValue(attribute.get().get().getKey(), attribute.get().get().getValueAsString());
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
             return true;
         } else {
             return false;

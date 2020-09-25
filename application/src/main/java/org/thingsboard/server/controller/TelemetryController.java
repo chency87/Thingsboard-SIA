@@ -373,7 +373,7 @@ public class TelemetryController extends BaseController {
     }
 
     private DeferredResult<ResponseEntity> saveAttributes(TenantId srcTenantId, EntityId entityIdSrc, String scope, JsonNode json) throws ThingsboardException {
-        if (!DataConstants.SERVER_SCOPE.equals(scope) && !DataConstants.SHARED_SCOPE.equals(scope)) {
+        if (!DataConstants.SERVER_SCOPE.equals(scope) && !DataConstants.SHARED_SCOPE.equals(scope) && !DataConstants.IDENTITY_SCOPE.equals(scope)) {
             return getImmediateDeferredResult("Invalid scope: " + scope, HttpStatus.BAD_REQUEST);
         }
         if (json.isObject()) {

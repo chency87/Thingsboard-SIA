@@ -30,6 +30,8 @@ public class TbGetDeviceAttrNodeConfiguration extends TbGetAttributesNodeConfigu
     @Override
     public TbGetDeviceAttrNodeConfiguration defaultConfiguration() {
         TbGetDeviceAttrNodeConfiguration configuration = new TbGetDeviceAttrNodeConfiguration();
+        getClientAttributeNames();
+
         configuration.setClientAttributeNames(Collections.emptyList());
         configuration.setSharedAttributeNames(Collections.emptyList());
         configuration.setServerAttributeNames(Collections.emptyList());

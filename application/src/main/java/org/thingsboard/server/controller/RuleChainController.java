@@ -66,7 +66,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-@ApiIgnore
+//@ApiIgnore
 @Slf4j
 @RestController
 @RequestMapping("/api")
@@ -216,7 +216,6 @@ public class RuleChainController extends BaseController {
 
             logEntityAction(emptyId(EntityType.RULE_CHAIN), null,
                     null, ActionType.UPDATED, e, ruleChainMetaData);
-
             throw handleException(e);
         }
     }
